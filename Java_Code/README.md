@@ -51,24 +51,26 @@ Host, database and user come from `Backend/src/main/resources/application.yml` a
 overridden with `DB_URL` and `DB_USER`. Flyway creates the schema
 (`db/migration/V1__carddemo_schema.sql`) on first start; Hibernate then only validates it.
 
-## Secrets
+## Configuration
 
-No credential is held in a committed file. Two variables are **required** and have no default, so
-the backend refuses to start without them:
+Two variables are **required** and have no default, so the backend refuses to start without them:
 
 | Variable | Purpose |
 |---|---|
 | `DB_PASSWORD` | PostgreSQL password |
 | `CARDDEMO_JWT_SECRET` | session-token signing key, at least 32 characters |
 
-For local work, copy the template once and fill it in — `.env` is gitignored:
+Both are in `Backend/.env`, which is **committed**, so a fresh clone runs with no setup step.
+`run-backend.ps1` loads it into the process environment, and anything already exported wins, so you
+can override a value for one session without editing the file. Per-developer overrides belong in
+`Backend/.env.local`, which is not committed.
 
-```powershell
-Copy-Item Backend\.env.example Backend\.env
-```
-
-`run-backend.ps1` loads `.env` into the process environment, and anything already exported wins, so
-a deployment can supply both from its own secret store instead.
+> Committing these is a deliberate trade for team convenience, and holds only while this repository
+> stays private and the database holds demonstration data. Before this application carries anything
+> real: rotate both values, delete `Backend/.env`, and supply them from the deployment's secret
+> store. `Backend/.env.example` documents every key for that. Note also that the database password
+> already appears in this repository's history at commit `6ffebaa`, so rotating it is the only thing
+> that actually retires the old value.
 
 ## Running
 

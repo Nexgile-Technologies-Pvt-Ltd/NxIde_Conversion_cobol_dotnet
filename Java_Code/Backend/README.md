@@ -8,15 +8,14 @@ See [`../README.md`](../README.md) for the full picture and
 
 ## Run
 
-Two secrets are required and have no defaults, so the application refuses to start without them.
-Copy the template and fill it in once:
+`DB_PASSWORD` and `CARDDEMO_JWT_SECRET` are required and have no defaults, so the application
+refuses to start without them. Both are in `.env`, which is committed, so a fresh clone needs no
+setup.
 
-```powershell
-Copy-Item .env.example .env   # then set DB_PASSWORD and CARDDEMO_JWT_SECRET
-```
-
-`.env` is gitignored. `..\run-backend.ps1` loads it into the process environment; running Maven or
-the jar directly needs the variables exported first.
+`..\run-backend.ps1` loads `.env` into the process environment; running Maven or the jar directly
+needs the variables exported first. Anything already exported wins, so you can override a value for
+one session without editing the file. Per-developer overrides belong in `.env.local`, which is not
+committed.
 
 ```powershell
 mvn spring-boot:run          # http://localhost:8080
@@ -55,13 +54,16 @@ variables. No credential is held in a committed file.
 | `carddemo.migration.legacy-password` | `CARDDEMO_LEGACY_PASSWORD` | `PASSWORD1` |
 | `server.port` | `SERVER_PORT` | `8080` |
 
-The two required values deliberately have no fallback: an unset `DB_PASSWORD` fails placeholder
-resolution at startup, and an absent or short `CARDDEMO_JWT_SECRET` is rejected by `JwtService`.
-That is preferable to inheriting a weak development key from source control. Rotating the signing
-key invalidates every token already issued, so users simply sign on again.
+The two required values have no fallback in `application.yml`: an unset `DB_PASSWORD` fails
+placeholder resolution at startup, and an absent or short `CARDDEMO_JWT_SECRET` is rejected by
+`JwtService`. `RequiredSecretsCheck` catches both before the data source is created and names what
+is missing. Rotating the signing key invalidates every token already issued, so users simply sign
+on again.
 
-For local work put both in `.env`. In a deployment, supply them from the platform's secret store
-rather than a file on disk.
+Both live in the committed `.env` so the team shares one working setup. That is appropriate only
+while this repository stays private and the database holds demonstration data. Before it carries
+anything real: rotate both values, delete `.env`, and supply them from the deployment's secret
+store instead — `.env.example` documents the keys for that.
 
 `carddemo.migration.source-directory` can point at
 `../../Cobol_Code/aws-mainframe-modernization-carddemo/app/data` to read the original files rather
