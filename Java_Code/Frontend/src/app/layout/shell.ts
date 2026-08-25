@@ -76,10 +76,21 @@ export class ShellComponent {
 
   readonly menuOpen = signal(false);
 
-  /** Administrator groups are hidden for a regular user; the backend enforces the same rule. */
-  readonly visibleGroups = computed(() =>
-    NAV_GROUPS.filter((group) => !group.admin || this.auth.isAdmin()),
-  );
+  /**
+   * Administrator groups are hidden for a regular user; the backend enforces the same rule.
+   * Entries carrying an {@code adminRoute} resolve to it for an administrator, which is how the
+   * Menu entry reaches the administrator menu rather than the main one.
+   */
+  readonly visibleGroups = computed(() => {
+    const admin = this.auth.isAdmin();
+    return NAV_GROUPS.filter((group) => !group.admin || admin).map((group) => ({
+      ...group,
+      items: group.items.map((item) => ({
+        ...item,
+        route: admin && item.adminRoute ? item.adminRoute : item.route,
+      })),
+    }));
+  });
 
   constructor() {
     // Close the mobile drawer whenever a navigation completes.

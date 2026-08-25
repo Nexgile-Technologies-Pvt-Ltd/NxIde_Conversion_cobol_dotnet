@@ -13,8 +13,12 @@ export interface UserProfile {
   lastName: string;
   role: UserRole;
   admin: boolean;
-  /** Route the sign-on program would have transferred to: admin menu or main menu. */
-  landingScreen: string;
+  /**
+   * The menu the COBOL sign-on program would have transferred to: admin menu for role A, main
+   * menu otherwise. Sign-on lands on the dashboard, so this drives the Menu destination rather
+   * than the landing route.
+   */
+  menuScreen: string;
 }
 
 export interface LoginResponse {

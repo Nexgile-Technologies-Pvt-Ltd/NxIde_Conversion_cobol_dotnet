@@ -49,9 +49,9 @@ public class AuthService {
     /** The generic authentication failure message; it never says which half was wrong. */
     private static final String GENERIC_FAILURE = "User ID or Password is incorrect. Try again ...";
 
-    /** Landing routes matching the COBOL XCTL targets {@code COADM01C} and {@code COMEN01C}. */
-    public static final String ADMIN_LANDING = "/admin-menu";
-    public static final String USER_LANDING = "/main-menu";
+    /** Menu routes matching the COBOL XCTL targets {@code COADM01C} and {@code COMEN01C}. */
+    public static final String ADMIN_MENU = "/admin-menu";
+    public static final String USER_MENU = "/main-menu";
 
     private final AppUserRepository users;
     private final PasswordEncoder passwordEncoder;
@@ -120,8 +120,8 @@ public class AuthService {
 
         UserProfile profile = toProfile(user);
         String token = jwtService.issue(user.getUserId(), user.getUserType(), displayName(user));
-        audit.success(userId, "SIGN_ON", "AppUser", userId, "Routed to " + profile.landingScreen());
-        log.info("User {} signed on and routed to {}", userId, profile.landingScreen());
+        audit.success(userId, "SIGN_ON", "AppUser", userId, "Menu route " + profile.menuScreen());
+        log.info("User {} signed on; menu route {}", userId, profile.menuScreen());
         return new LoginResponse(token, jwtService.getExpirationMinutes() * 60, profile);
     }
 
@@ -235,7 +235,7 @@ public class AuthService {
 
     static UserProfile toProfile(AppUser user) {
         return new UserProfile(user.getUserId(), user.getFirstName(), user.getLastName(),
-                user.getUserType(), user.isAdmin(), user.isAdmin() ? ADMIN_LANDING : USER_LANDING);
+                user.getUserType(), user.isAdmin(), user.isAdmin() ? ADMIN_MENU : USER_MENU);
     }
 
     private static String displayName(AppUser user) {

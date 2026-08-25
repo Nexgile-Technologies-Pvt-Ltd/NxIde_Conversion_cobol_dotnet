@@ -42,5 +42,5 @@ export const anonymousGuard: CanActivateFn = () => {
   if (!auth.isAuthenticated()) {
     return true;
   }
-  return router.createUrlTree([auth.isAdmin() ? '/admin-menu' : '/main-menu']);
+  return router.createUrlTree(['/dashboard']);
 };

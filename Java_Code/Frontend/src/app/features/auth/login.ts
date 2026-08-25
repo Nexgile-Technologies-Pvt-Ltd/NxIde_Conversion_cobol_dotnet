@@ -137,10 +137,12 @@ export class LoginComponent {
     this.busy.set(true);
     this.message.set(null);
     this.auth.login(this.userId.trim(), this.password).subscribe({
-      next: (response) => {
+      next: () => {
         this.busy.set(false);
+        // Sign-on lands on the dashboard; a guard-supplied returnUrl still wins so a deep link
+        // survives the detour through this screen.
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-        void this.router.navigateByUrl(returnUrl ?? response.user.landingScreen);
+        void this.router.navigateByUrl(returnUrl ?? '/dashboard');
       },
       error: (error: unknown) => {
         this.busy.set(false);

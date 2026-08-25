@@ -9,6 +9,12 @@ export interface NavItem {
   icon: string;
   /** CICS transaction the screen replaces, shown as a hint. */
   tran?: string;
+  /**
+   * Route to use instead when the signed-on user is an administrator. Set on the Menu entry so it
+   * follows the {@code COSGN00C} routing: role A reaches the administrator menu, everyone else the
+   * main menu.
+   */
+  adminRoute?: string;
 }
 
 /** A labelled group of sidebar destinations. */
@@ -29,7 +35,7 @@ export const NAV_GROUPS: NavGroup[] = [
     admin: false,
     items: [
       { label: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
-      { label: 'Menu', route: '/main-menu', icon: 'menu', tran: 'CM00' },
+      { label: 'Menu', route: '/main-menu', adminRoute: '/admin-menu', icon: 'menu', tran: 'CM00' },
     ],
   },
   {

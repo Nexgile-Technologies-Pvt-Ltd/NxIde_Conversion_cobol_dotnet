@@ -63,9 +63,12 @@ public final class AuthDtos {
     }
 
     /**
-     * Session profile. {@code role} is {@code A} or {@code U}; {@code landingScreen} reproduces the
-     * {@code COSGN00C} routing of an {@code A} user to the admin menu and everyone else to the
-     * main menu.
+     * Session profile. {@code role} is {@code A} or {@code U}.
+     *
+     * <p>{@code menuScreen} carries the {@code COSGN00C} routing decision: an {@code A} user is
+     * routed to the administrator menu and everyone else to the main menu. Sign-on itself lands on
+     * the dashboard, which is a screen the legacy application did not have, so this field is what
+     * the Menu destination resolves to rather than where the user lands.</p>
      */
     public record UserProfile(
             String userId,
@@ -73,7 +76,7 @@ public final class AuthDtos {
             String lastName,
             String role,
             boolean admin,
-            String landingScreen) {
+            String menuScreen) {
     }
 
     /** Public sign-on page configuration; lets the UI hide signup when it is disabled. */

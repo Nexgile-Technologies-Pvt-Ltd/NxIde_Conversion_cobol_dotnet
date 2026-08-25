@@ -178,9 +178,9 @@ export class SignupComponent {
         confirmPassword: this.confirmPassword,
       })
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.busy.set(false);
-          void this.router.navigateByUrl(response.user.landingScreen);
+          void this.router.navigateByUrl('/dashboard');
         },
         error: (error: unknown) => {
           this.busy.set(false);
