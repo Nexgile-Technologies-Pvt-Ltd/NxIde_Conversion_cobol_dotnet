@@ -5,9 +5,10 @@ import { IconComponent } from '../../shared/icon';
 /**
  * The branded left half of the sign-on and sign-up screens.
  *
- * The four capability rows are the application's own: account and customer servicing, daily
- * transaction posting, monthly interest and statements, and the security controls that replaced
- * the legacy plaintext credential model.
+ * The six capability rows are the application's own: account and customer servicing, daily
+ * transaction posting, monthly interest and statements, the security controls that replaced the
+ * legacy plaintext credential model, online bill payment, and the batch console that stands in
+ * for submitting the jobs through JES.
  */
 @Component({
   selector: 'cd-auth-brand-panel',
@@ -70,6 +71,16 @@ export class AuthBrandPanelComponent {
       icon: 'shield',
       title: 'Secured & Audited',
       copy: 'Hashed credentials, role-checked use cases and a redacted trail of every change.',
+    },
+    {
+      icon: 'billPayment',
+      title: 'Bill Payment',
+      copy: 'Settle a balance in full from the card, posted with the original type, category and source.',
+    },
+    {
+      icon: 'batch',
+      title: 'Batch Operations',
+      copy: 'Run posting, interest, reports and statements, each with its completion code and rejects.',
     },
   ];
 }

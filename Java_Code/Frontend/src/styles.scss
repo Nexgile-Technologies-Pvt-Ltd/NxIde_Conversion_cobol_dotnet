@@ -1070,54 +1070,43 @@ table.cd-table td.cd-mono {
 
 /* ------------------------------------------------------------------ sign-on and sign-up */
 
+/*
+ * The CardDemo key art carries the backdrop. Its gold sweep falls on the column split and its
+ * bloom sits under the form, so the curve, sweep and glow that used to be drawn over this are
+ * gone: the art supplies all three. The navy underneath covers the moment before the image
+ * decodes and any edge the crop cannot fill.
+ */
 .cd-auth {
   position: relative;
   min-height: 100vh;
   display: grid;
   grid-template-columns: 1.15fr 1fr;
   overflow: hidden;
-  background:
-    radial-gradient(900px 520px at 8% 4%, #16406f 0%, transparent 62%),
-    radial-gradient(700px 480px at 96% 96%, #123963 0%, transparent 60%),
-    linear-gradient(150deg, var(--cd-navy-900) 0%, #0c2547 52%, var(--cd-navy-900) 100%);
-}
-
-/* Warm bloom behind the form card, echoing the gold accent. */
-.cd-auth__glow {
-  position: absolute;
-  top: 12%;
-  right: -6%;
-  width: 46vw;
-  height: 70vh;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(217, 169, 74, 0.16) 0%, transparent 68%);
-  filter: blur(10px);
-  pointer-events: none;
+  background-color: var(--cd-navy-900);
+  background-image: url('/login-background.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 /*
- * The sweeping divider between the brand half and the form half. The curve draws the shaped
- * edge and the sweep carries its tint out to the right of the viewport, so the two together
- * read as one lightened region behind the card.
+ * The brand copy sits over the card in the art, so the left is banked down far enough to hold
+ * small type legible against the chip and the wave lines. It clears by the column split, which
+ * leaves the gold sweep and the clean field behind the form at full strength.
  */
-.cd-auth__curve,
-.cd-auth__sweep {
+.cd-auth::before {
+  content: '';
   position: absolute;
-  top: 0;
-  height: 100%;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(7, 22, 43, 0.94) 0%,
+    rgba(7, 22, 43, 0.9) 30%,
+    rgba(7, 22, 43, 0.76) 44%,
+    rgba(7, 22, 43, 0.4) 55%,
+    rgba(7, 22, 43, 0) 68%
+  );
   pointer-events: none;
-}
-
-.cd-auth__curve {
-  left: calc(53.5% - 70px);
-  width: 140px;
-  fill: rgba(255, 255, 255, 0.055);
-}
-
-.cd-auth__sweep {
-  left: calc(53.5% + 70px);
-  right: 0;
-  background: rgba(255, 255, 255, 0.055);
 }
 
 /* ------------------------------------------------------------------ brand half */
@@ -1131,7 +1120,7 @@ table.cd-table td.cd-mono {
   justify-content: center;
   gap: 30px;
   color: #fff;
-  max-width: 720px;
+  max-width: 960px;
 }
 
 .cd-brand__mark {
@@ -1181,7 +1170,7 @@ table.cd-table td.cd-mono {
 }
 
 .cd-brand__headline h1 {
-  font-size: clamp(30px, 3.5vw, 46px);
+  font-size: clamp(26px, 2.9vw, 39px);
   font-weight: 700;
   line-height: 1.12;
   letter-spacing: -0.02em;
@@ -1195,7 +1184,7 @@ table.cd-table td.cd-mono {
 
 .cd-brand__headline p {
   margin: 0;
-  max-width: 46ch;
+  max-width: 64ch;
   font-size: 13.5px;
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.66);
@@ -1205,9 +1194,9 @@ table.cd-table td.cd-mono {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 17px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 36px;
 }
 
 .cd-brand__features li {
@@ -1241,7 +1230,7 @@ table.cd-table td.cd-mono {
   font-size: 12.5px;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.6);
-  max-width: 42ch;
+  max-width: 34ch;
 }
 
 /* ------------------------------------------------------------------ form half */
@@ -1493,15 +1482,23 @@ table.cd-table td.cd-mono {
 /* ------------------------------------------------------------------ responsive */
 
 @media (max-width: 1180px) {
+  /*
+   * One column, so the crop is framed on the clear left of the art instead of its centre, where
+   * the gold sweep would otherwise run straight through the form.
+   */
   .cd-auth {
     grid-template-columns: 1fr;
+    background-position: 14% center;
   }
 
-  /* The brand half becomes a header above the card, and the divider is dropped. */
-  .cd-auth__curve,
-  .cd-auth__sweep,
-  .cd-auth__glow {
-    display: none;
+  /* Stacked, so the copy no longer sits to one side: the scrim covers the full height. */
+  .cd-auth::before {
+    background: linear-gradient(
+      180deg,
+      rgba(7, 22, 43, 0.9) 0%,
+      rgba(7, 22, 43, 0.82) 55%,
+      rgba(7, 22, 43, 0.9) 100%
+    );
   }
 
   .cd-brand {

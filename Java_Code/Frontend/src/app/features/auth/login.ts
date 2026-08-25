@@ -23,13 +23,7 @@ import { AuthBrandPanelComponent } from './auth-brand-panel';
   imports: [FormsModule, RouterLink, IconComponent, MessageLineComponent, AuthBrandPanelComponent],
   template: `
     <div class="cd-auth">
-      <div class="cd-auth__glow"></div>
       <cd-auth-brand-panel />
-
-      <svg class="cd-auth__curve" viewBox="0 0 140 900" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M140 0H70C70 220 0 260 0 450s70 230 70 450h70z" />
-      </svg>
-      <div class="cd-auth__sweep"></div>
 
       <section class="cd-auth__panel">
         <form class="cd-auth__card" (ngSubmit)="submit()">
