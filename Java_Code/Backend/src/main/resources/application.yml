@@ -1,0 +1,88 @@
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: carddemo-backend
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://217.217.251.161:8100/cobol_to_java_app}
+    username: ${DB_USER:cobol_to_java_user}
+    password: ${DB_PASSWORD:bv3a2p3juclcYgd2}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      pool-name: carddemo-pool
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Flyway owns the schema (DATA-009); Hibernate only validates it at startup.
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+        format_sql: false
+    show-sql: false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+
+carddemo:
+  allowed-origins:
+    - http://localhost:4200
+    - http://127.0.0.1:4200
+  jwt:
+    # Override with the CARDDEMO_JWT_SECRET environment variable in any real deployment.
+    secret: ${CARDDEMO_JWT_SECRET:carddemo-development-signing-secret-change-me-please}
+    expiration-minutes: 240
+    issuer: carddemo
+  migration:
+    enabled: true
+    force: false
+    # Optional: point at the original Cobol_Code data folder. When blank the bundled copies of the
+    # same files under classpath:cobol-data are used.
+    source-directory: ${COBOL_DATA_DIR:}
+    legacy-password: ${CARDDEMO_LEGACY_PASSWORD:PASSWORD1}
+  security:
+    max-failed-attempts: 5
+    lock-minutes: 15
+    min-password-length: 8
+    signup-role: U
+    signup-enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.carddemo: INFO
+    org.hibernate.SQL: WARN
