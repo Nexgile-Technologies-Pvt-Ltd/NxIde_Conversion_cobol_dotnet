@@ -9,7 +9,11 @@ target/
 .project
 .settings/
 
-### Local overrides ###
+### Secrets and local overrides ###
+# .env holds live credentials; only .env.example is committed.
+.env
+.env.*
+!.env.example
 application-local.yml
 application-local.properties
 *.log

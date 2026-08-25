@@ -11,7 +11,9 @@ spring:
   datasource:
     url: ${DB_URL:jdbc:postgresql://217.217.251.161:8100/cobol_to_java_app}
     username: ${DB_USER:cobol_to_java_user}
-    password: ${DB_PASSWORD:bv3a2p3juclcYgd2}
+    # Required: no default, so the application refuses to start without a supplied credential.
+    # Set DB_PASSWORD in the environment, or put it in Backend/.env (see .env.example).
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -63,8 +65,10 @@ carddemo:
     - http://localhost:4200
     - http://127.0.0.1:4200
   jwt:
-    # Override with the CARDDEMO_JWT_SECRET environment variable in any real deployment.
-    secret: ${CARDDEMO_JWT_SECRET:carddemo-development-signing-secret-change-me-please}
+    # Required: no default, so a weak signing key can never be inherited from source control.
+    # At least 32 characters. Set CARDDEMO_JWT_SECRET in the environment, or put it in
+    # Backend/.env (see .env.example). Changing it invalidates every issued token.
+    secret: ${CARDDEMO_JWT_SECRET}
     expiration-minutes: 240
     issuer: carddemo
   migration:

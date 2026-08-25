@@ -8,9 +8,19 @@ See [`../README.md`](../README.md) for the full picture and
 
 ## Run
 
+Two secrets are required and have no defaults, so the application refuses to start without them.
+Copy the template and fill it in once:
+
+```powershell
+Copy-Item .env.example .env   # then set DB_PASSWORD and CARDDEMO_JWT_SECRET
+```
+
+`.env` is gitignored. `..\run-backend.ps1` loads it into the process environment; running Maven or
+the jar directly needs the variables exported first.
+
 ```powershell
 mvn spring-boot:run          # http://localhost:8080
-mvn test                     # 44 characterisation tests
+mvn test                     # 44 characterisation tests, no database needed
 mvn -DskipTests package      # target/carddemo-backend.jar
 java -jar target/carddemo-backend.jar
 ```
@@ -33,17 +43,25 @@ java -jar target/carddemo-backend.jar
 ## Configuration
 
 Everything lives in `src/main/resources/application.yml` and can be overridden by environment
-variables.
+variables. No credential is held in a committed file.
 
 | Key | Environment variable | Default |
 |---|---|---|
+| `spring.datasource.password` | `DB_PASSWORD` | **required, no default** |
+| `carddemo.jwt.secret` | `CARDDEMO_JWT_SECRET` | **required, no default**, at least 32 characters |
 | `spring.datasource.url` | `DB_URL` | `jdbc:postgresql://217.217.251.161:8100/cobol_to_java_app` |
 | `spring.datasource.username` | `DB_USER` | `cobol_to_java_user` |
-| `spring.datasource.password` | `DB_PASSWORD` | (set in the file) |
-| `carddemo.jwt.secret` | `CARDDEMO_JWT_SECRET` | development value — **replace in any real deployment** |
 | `carddemo.migration.source-directory` | `COBOL_DATA_DIR` | empty; the bundled `classpath:cobol-data` copies are used |
 | `carddemo.migration.legacy-password` | `CARDDEMO_LEGACY_PASSWORD` | `PASSWORD1` |
 | `server.port` | `SERVER_PORT` | `8080` |
+
+The two required values deliberately have no fallback: an unset `DB_PASSWORD` fails placeholder
+resolution at startup, and an absent or short `CARDDEMO_JWT_SECRET` is rejected by `JwtService`.
+That is preferable to inheriting a weak development key from source control. Rotating the signing
+key invalidates every token already issued, so users simply sign on again.
+
+For local work put both in `.env`. In a deployment, supply them from the platform's secret store
+rather than a file on disk.
 
 `carddemo.migration.source-directory` can point at
 `../../Cobol_Code/aws-mainframe-modernization-carddemo/app/data` to read the original files rather

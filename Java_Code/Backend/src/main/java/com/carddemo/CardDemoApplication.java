@@ -1,5 +1,6 @@
 package com.carddemo;
 
+import com.carddemo.config.RequiredSecretsCheck;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
@@ -21,6 +22,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class CardDemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CardDemoApplication.class, args);
+        SpringApplication application = new SpringApplication(CardDemoApplication.class);
+        // Checks DB_PASSWORD and CARDDEMO_JWT_SECRET before the data source or any bean is created,
+        // so a missing secret reports itself rather than surfacing as an authentication failure.
+        application.addListeners(new RequiredSecretsCheck());
+        application.run(args);
     }
 }

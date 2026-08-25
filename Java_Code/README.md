@@ -47,24 +47,42 @@ The backend is configured for the supplied instance:
 | Database | `cobol_to_java_app` |
 | User | `cobol_to_java_user` |
 
-Credentials come from `Backend/src/main/resources/application.yml` and can be overridden with the
-`DB_URL`, `DB_USER` and `DB_PASSWORD` environment variables. Flyway creates the schema
+Host, database and user come from `Backend/src/main/resources/application.yml` and can be
+overridden with `DB_URL` and `DB_USER`. Flyway creates the schema
 (`db/migration/V1__carddemo_schema.sql`) on first start; Hibernate then only validates it.
+
+## Secrets
+
+No credential is held in a committed file. Two variables are **required** and have no default, so
+the backend refuses to start without them:
+
+| Variable | Purpose |
+|---|---|
+| `DB_PASSWORD` | PostgreSQL password |
+| `CARDDEMO_JWT_SECRET` | session-token signing key, at least 32 characters |
+
+For local work, copy the template once and fill it in — `.env` is gitignored:
+
+```powershell
+Copy-Item Backend\.env.example Backend\.env
+```
+
+`run-backend.ps1` loads `.env` into the process environment, and anything already exported wins, so
+a deployment can supply both from its own secret store instead.
 
 ## Running
 
 ```powershell
-# 1. Backend  (http://localhost:8080, Swagger at /swagger-ui.html)
-cd Backend
-mvn spring-boot:run
-
-# 2. Frontend (http://localhost:4200)
-cd Frontend
-npm install
-npm start
+.\run-backend.ps1     # http://localhost:8080, Swagger at /swagger-ui.html
+.\run-frontend.ps1    # http://localhost:4200
 ```
 
-Or use the helper scripts from this folder: `.\run-backend.ps1` and `.\run-frontend.ps1`.
+Or directly, with `DB_PASSWORD` and `CARDDEMO_JWT_SECRET` already exported:
+
+```powershell
+cd Backend;  mvn spring-boot:run
+cd Frontend; npm install; npm start
+```
 
 On the very first start the backend migrates the COBOL data sets into PostgreSQL and logs the
 result. Subsequent starts detect the existing data and skip the migration.
