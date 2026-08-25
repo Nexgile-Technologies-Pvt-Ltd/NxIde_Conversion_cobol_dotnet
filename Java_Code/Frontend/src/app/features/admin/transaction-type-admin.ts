@@ -20,11 +20,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, RouterLink, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CTLI"
-      program="COTRTLIC / COTRTUPC"
       title="Transaction type maintenance"
       subtitle="Seven rows per page; F2 opens maintenance, F10 confirms a change"
-      origin="COTRTLIC.cbl / COTRTUPC.cbl"
     />
 
     <div class="cd-panel">

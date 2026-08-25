@@ -22,11 +22,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, RouterLink, AmountPipe, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CB00"
-      program="COBIL00C"
       title="Bill payment"
       subtitle="Pays the whole current balance in one atomic unit of work"
-      origin="COBIL00C.cbl / COBIL00.bms"
     />
 
     <div class="cd-panel">

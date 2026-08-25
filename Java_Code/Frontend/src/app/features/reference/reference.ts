@@ -23,11 +23,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, AmountPipe, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="----"
-      program="Reference data"
       title="Reference data"
-      subtitle="TRANTYPE, TRANCATG, DISCGRP and TCATBALF as migrated from the COBOL data sets"
-      origin="CVTRA01Y / CVTRA02Y / CVTRA03Y / CVTRA04Y"
+      subtitle="Transaction types, categories, disclosure groups and category balances"
     />
 
     <cd-message [text]="message()" kind="error" />

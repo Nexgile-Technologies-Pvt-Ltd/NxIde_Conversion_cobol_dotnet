@@ -20,11 +20,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, RouterLink, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CU00"
-      program="COUSR00C"
       title="Security users"
       subtitle="Ten rows per page; U updates a user, D deletes one"
-      origin="COUSR00C.cbl / COUSR00.bms"
     />
 
     <div class="cd-panel">

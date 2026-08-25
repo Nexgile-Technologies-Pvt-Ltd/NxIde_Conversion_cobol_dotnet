@@ -1,25 +1,20 @@
 import { DatePipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, signal } from '@angular/core';
 
 /**
- * The common screen header every BMS map carried: transaction id, program name, title, date and
- * time. Reproducing it keeps each screen recognisable to someone who used the 3270 application.
+ * The heading every screen carries: its title, a line of context beneath it, and the clock.
+ *
+ * <p>The BMS maps this application was converted from also carried a transaction id, a program
+ * name and the source file each screen came from. Those identified the screen to someone working
+ * a 3270; they mean nothing to someone working this one, so the header states the screen in its
+ * own terms. The transaction ids remain in the breadcrumb and the sidebar, which is where they
+ * are useful for tracing a screen back to its source.</p>
  */
 @Component({
   selector: 'cd-screen-header',
   imports: [DatePipe],
   template: `
     <header class="cd-screen-header">
-      <div class="cd-screen-header__line">
-        <span>TRAN: {{ tran }}</span>
-        <span>CardDemo</span>
-        <span>{{ now | date: 'MM/dd/yy' }}</span>
-      </div>
-      <div class="cd-screen-header__line">
-        <span>PGM: {{ program }}</span>
-        <span></span>
-        <span>{{ now | date: 'HH:mm:ss' }}</span>
-      </div>
       <div class="cd-screen-header__title">
         <div>
           <h1>{{ title }}</h1>
@@ -27,22 +22,27 @@ import { Component, Input } from '@angular/core';
             <div class="cd-screen-header__subtitle">{{ subtitle }}</div>
           }
         </div>
-        @if (origin) {
-          <span class="cd-screen-header__origin">COBOL source: {{ origin }}</span>
-        }
+        <span class="cd-screen-header__clock">{{ now() | date: 'MM/dd/yy' }} &middot; {{ now() | date: 'HH:mm:ss' }}</span>
       </div>
     </header>
   `,
 })
-export class ScreenHeaderComponent {
-  /** CICS transaction id, for example {@code CAVW}. */
-  @Input() tran = '';
-  /** COBOL program name, for example {@code COACTVWC}. */
-  @Input() program = '';
+export class ScreenHeaderComponent implements OnDestroy {
   @Input() title = '';
   @Input() subtitle = '';
-  /** Source file this screen was converted from, shown as provenance. */
-  @Input() origin = '';
 
-  readonly now = new Date();
+  /**
+   * The time now, not the moment the screen was opened. The map header this replaces was stamped
+   * once when the screen was sent, which on a long-lived route reads as a stopped clock.
+   */
+  readonly now = signal(new Date());
+
+  private readonly tick: ReturnType<typeof setInterval> = setInterval(
+    () => this.now.set(new Date()),
+    1000,
+  );
+
+  ngOnDestroy(): void {
+    clearInterval(this.tick);
+  }
 }

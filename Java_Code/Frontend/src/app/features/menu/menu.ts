@@ -21,15 +21,12 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      [tran]="view()?.transactionId ?? ''"
-      [program]="view()?.programName ?? ''"
       [title]="admin ? 'Administrator menu' : 'Main menu'"
       [subtitle]="
         admin
           ? 'Security and reference-data functions'
           : 'Account, card, transaction, report and payment functions'
       "
-      [origin]="admin ? 'COADM01C.cbl / COADM02Y.cpy' : 'COMEN01C.cbl / COMEN02Y.cpy'"
     />
 
     <cd-message [text]="message()" [kind]="kind()" />

@@ -19,11 +19,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [DatePipe, RouterLink, AmountPipe, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="----"
-      program="CBSTM03A"
       title="Card statements"
       subtitle="Fixed 80-column text and escaped HTML, one statement per cross-referenced card"
-      origin="CBSTM03A.CBL / CREASTMT.JCL"
     />
 
     <cd-message [text]="message()" kind="error" />
@@ -72,7 +69,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
               } @empty {
                 <tr>
                   <td colspan="7" class="cd-empty">
-                    No statements yet. Run the CREASTMT job from the batch console.
+                    No statements yet. Run the card statements job from the batch console.
                   </td>
                 </tr>
               }

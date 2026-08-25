@@ -20,11 +20,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, RouterLink, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CCLI"
-      program="COCRDLIC"
       title="Credit card list"
       subtitle="Seven rows per page; S views a card, U updates it"
-      origin="COCRDLIC.cbl / COCRDLI.bms"
     />
 
     <div class="cd-panel">

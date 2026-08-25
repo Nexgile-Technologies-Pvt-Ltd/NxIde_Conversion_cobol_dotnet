@@ -31,7 +31,7 @@ import { AuthBrandPanelComponent } from './auth-brand-panel';
 
           <h2>Welcome Back!</h2>
           <p class="cd-auth__lead">Sign on to continue servicing accounts</p>
-          <div class="cd-auth__rule"><span>TRAN CC00 &middot; COSGN00C</span></div>
+          <div class="cd-auth__rule"><span>SECURE SIGN-ON</span></div>
 
           <cd-message [text]="message()" [kind]="messageKind()" />
 

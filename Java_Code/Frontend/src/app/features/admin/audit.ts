@@ -16,11 +16,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [DatePipe, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="----"
-      program="AuditService"
       title="Audit trail"
       subtitle="Actor, action, target, outcome and time for every privileged operation"
-      origin="Security and Controls, FR-USER-007"
     />
 
     <cd-message [text]="message()" kind="error" />

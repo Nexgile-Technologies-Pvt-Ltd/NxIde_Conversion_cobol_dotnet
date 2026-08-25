@@ -16,20 +16,16 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [RouterLink, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="----"
-      program="COPAUS0C"
       title="Pending authorization view"
       subtitle="Optional module"
-      origin="app-authorization-ims-db2-mq"
     />
 
     <div class="cd-panel">
       <div class="cd-panel__body">
         <div class="cd-message cd-message--warn">
           <span>
-            This function belongs to the optional authorization extension, which uses IMS, Db2 and
-            MQ resources that are not part of this deployment. The legacy main menu reported the
-            same "not installed" result for option 11.
+            This function belongs to the optional authorization extension, which uses resources
+            that are not part of this deployment.
           </span>
         </div>
         <div class="cd-actions" style="margin-top: 14px">

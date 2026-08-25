@@ -20,11 +20,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [DatePipe, DecimalPipe, FormsModule, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="----"
-      program="Batch console"
       title="Batch operations"
-      subtitle="POSTTRAN, INTCALC, TRANREPT and CREASTMT job equivalents"
-      origin="CBTRN02C / CBACT04C / CBTRN03C / CBSTM03A"
+      subtitle="Post transactions, calculate interest, generate reports and statements"
     />
 
     <cd-message [text]="message()" [kind]="kind()" />
@@ -203,10 +200,10 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 
     <div class="cd-panel">
       <div class="cd-panel__head">
-        <h2>COBOL data migration</h2>
+        <h2>Data load</h2>
         <div class="cd-actions">
           <button type="button" class="cd-small" (click)="loadMigration()">Refresh</button>
-          <button type="button" class="cd-small" (click)="runMigration()">Re-run migration</button>
+          <button type="button" class="cd-small" (click)="runMigration()">Re-run load</button>
         </div>
       </div>
       <div class="cd-panel__body cd-panel__body--flush">
@@ -325,7 +322,7 @@ export class BatchConsoleComponent {
         this.busy.set(false);
         this.migration.set(rows);
         this.kind.set('ok');
-        this.message.set('COBOL data migration completed.');
+        this.message.set('Data load completed.');
       },
       error: (error: unknown) => this.fail(error),
     });

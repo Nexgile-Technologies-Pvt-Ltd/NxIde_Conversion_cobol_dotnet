@@ -21,11 +21,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, RouterLink, AmountPipe, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CCDL"
-      program="COCRDSLC"
       title="View credit card"
       subtitle="The card must belong to the account entered"
-      origin="COCRDSLC.cbl / COCRDSL.bms"
     />
 
     <div class="cd-panel">

@@ -20,11 +20,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, RouterLink, AmountPipe, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CT00"
-      program="COTRN00C"
       title="Transaction list"
       subtitle="Ten rows per page; S opens the detail screen"
-      origin="COTRN00C.cbl / COTRN00.bms"
     />
 
     <div class="cd-panel">

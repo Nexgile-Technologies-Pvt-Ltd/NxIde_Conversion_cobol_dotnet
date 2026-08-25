@@ -23,11 +23,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [DatePipe, FormsModule, RouterLink, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CU02"
-      program="COUSR02C"
       title="Update security user"
       subtitle="Save and Return are separate actions; a blank password keeps the current one"
-      origin="COUSR02C.cbl / COUSR02.bms"
     />
 
     <div class="cd-panel">

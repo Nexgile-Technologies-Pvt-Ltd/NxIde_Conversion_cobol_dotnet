@@ -21,11 +21,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, RouterLink, AmountPipe, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CT01"
-      program="COTRN01C"
       title="View transaction"
       subtitle="Read-only detail with resolved type and category descriptions"
-      origin="COTRN01C.cbl / COTRN01.bms"
     />
 
     <div class="cd-panel">

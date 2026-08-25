@@ -21,11 +21,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, RouterLink, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CU03"
-      program="COUSR03C"
       title="Delete security user"
       subtitle="Confirmation required; the acting user and the last administrator are protected"
-      origin="COUSR03C.cbl / COUSR03.bms"
     />
 
     <div class="cd-panel">

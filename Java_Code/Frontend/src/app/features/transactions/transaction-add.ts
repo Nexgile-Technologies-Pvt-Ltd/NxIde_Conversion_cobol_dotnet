@@ -21,11 +21,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, RouterLink, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CT02"
-      program="COTRN02C"
       title="Add transaction"
       subtitle="Account takes precedence over card when both are supplied"
-      origin="COTRN02C.cbl / COTRN02.bms"
     />
 
     <cd-message [text]="message()" [kind]="kind()" />

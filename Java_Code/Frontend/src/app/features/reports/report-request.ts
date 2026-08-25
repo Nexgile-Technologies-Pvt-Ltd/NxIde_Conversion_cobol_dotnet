@@ -22,11 +22,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [DatePipe, FormsModule, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CR00"
-      program="CORPT00C"
       title="Transaction reports"
-      subtitle="Requests are queued and rendered by the TRANREPT job equivalent"
-      origin="CORPT00C.cbl / CBTRN03C.cbl"
+      subtitle="Requests are queued and rendered by the transaction report job"
     />
 
     <cd-message [text]="message()" [kind]="kind()" />

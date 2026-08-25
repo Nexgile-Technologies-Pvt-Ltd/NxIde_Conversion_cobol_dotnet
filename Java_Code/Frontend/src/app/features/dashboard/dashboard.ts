@@ -25,10 +25,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   ],
   template: `
     <cd-screen-header
-      tran="----"
-      program="DashboardService"
       title="Portfolio overview"
-      subtitle="Live aggregates over the migrated CardDemo data"
+      subtitle="Live aggregates across accounts, cards and transactions"
     />
 
     <cd-message [text]="message()" kind="error" />

@@ -20,11 +20,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, RouterLink, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CU01"
-      program="COUSR01C"
       title="Add security user"
       subtitle="Validation order: first name, last name, user ID, password, user type"
-      origin="COUSR01C.cbl / COUSR01.bms"
     />
 
     <cd-message [text]="message()" [kind]="kind()" />

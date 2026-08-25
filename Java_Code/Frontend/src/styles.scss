@@ -293,10 +293,19 @@ h4 {
 
 /* ------------------------------------------------------------------ navbar */
 
-.cd-navbar {
+/*
+ * The bar sticks by its host element, not by the header inside it. The host wraps the header
+ * exactly, so a sticky header would be pinned inside a containing block with no room to travel
+ * and would ride up with the content instead of holding at the top.
+ */
+cd-navbar {
   position: sticky;
   top: 0;
   z-index: 20;
+}
+
+.cd-navbar {
+  position: relative;
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--cd-border);
@@ -543,16 +552,6 @@ h4 {
   margin-bottom: 16px;
 }
 
-.cd-screen-header__line {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  font-family: var(--cd-mono);
-  font-size: 11.5px;
-  color: var(--cd-ink-faint);
-  letter-spacing: 0.04em;
-}
-
 .cd-screen-header__title {
   display: flex;
   align-items: baseline;
@@ -571,14 +570,12 @@ h4 {
   margin-top: 3px;
 }
 
-.cd-screen-header__origin {
+/* Sits opposite the title, on the baseline the map header used to keep its stamp on. */
+.cd-screen-header__clock {
   font-family: var(--cd-mono);
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--cd-ink-faint);
-  background: var(--cd-surface-alt);
-  border: 1px solid var(--cd-border);
-  border-radius: 999px;
-  padding: 3px 10px;
+  letter-spacing: 0.04em;
   white-space: nowrap;
 }
 

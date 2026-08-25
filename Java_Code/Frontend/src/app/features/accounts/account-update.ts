@@ -20,11 +20,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CAUP"
-      program="COACTUPC"
       title="Update account"
       subtitle="Account and customer are saved together as one unit of work"
-      origin="COACTUPC.cbl / COACTUP.bms"
     />
 
     <div class="cd-panel">

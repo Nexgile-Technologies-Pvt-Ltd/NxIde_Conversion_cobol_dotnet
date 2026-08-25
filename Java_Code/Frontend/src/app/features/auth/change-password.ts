@@ -18,8 +18,6 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="----"
-      program="AuthService"
       title="Change password"
       subtitle="Credentials are stored as salted hashes; no password is ever displayed."
     />

@@ -20,11 +20,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, RouterLink, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CCUP"
-      program="COCRDUPC"
       title="Update credit card"
       subtitle="Embossed name, active status and expiry month/year"
-      origin="COCRDUPC.cbl / COCRDUP.bms"
     />
 
     <div class="cd-panel">
@@ -122,7 +119,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
                 <label>Expiry day (retained)</label>
                 <div class="cd-value">{{ card.expirationDay }}</div>
                 <span class="cd-field__hint">
-                  Hidden on the BMS map; kept and validated with the new month and year
+                  Not editable here; kept and validated with the new month and year
                 </span>
               </div>
             </div>

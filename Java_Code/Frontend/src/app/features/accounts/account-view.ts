@@ -21,11 +21,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   imports: [FormsModule, RouterLink, AmountPipe, MessageLineComponent, ScreenHeaderComponent],
   template: `
     <cd-screen-header
-      tran="CAVW"
-      program="COACTVWC"
       title="View account"
       subtitle="Account, customer and the cross-referenced card"
-      origin="COACTVWC.cbl / COACTVW.bms"
     />
 
     <div class="cd-panel">

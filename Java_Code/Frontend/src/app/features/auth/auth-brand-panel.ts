@@ -30,9 +30,8 @@ import { IconComponent } from '../../shared/icon';
           <span>Balance Every Cent.</span>
         </h1>
         <p>
-          The CardDemo mainframe estate, rebuilt on Angular, Spring Boot and PostgreSQL. Every
-          screen, validation rule and batch calculation carried over from the original COBOL, with
-          the arithmetic verified to the cent against the shipped fixture data.
+          Credit card servicing on Angular, Spring Boot and PostgreSQL. Every screen, validation
+          rule and batch calculation is verified to the cent against the shipped fixture data.
         </p>
       </div>
 
@@ -60,7 +59,7 @@ export class AuthBrandPanelComponent {
     {
       icon: 'transactions',
       title: 'Transaction Posting',
-      copy: 'Daily posting with credit-limit and expiry checks, and the exact legacy reject reasons.',
+      copy: 'Daily posting with credit-limit and expiry checks, and a precise reason for each reject.',
     },
     {
       icon: 'percent',
