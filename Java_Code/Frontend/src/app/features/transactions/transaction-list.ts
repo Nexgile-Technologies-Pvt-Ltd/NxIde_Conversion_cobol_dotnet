@@ -1,6 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
+// Aliased: this component already has a `filter` field holding the search box contents.
+import { filter as rxFilter } from 'rxjs/operators';
 
 import { ApiService, errorField, errorMessage } from '../../core/api.service';
 import { PageResult, TransactionRow } from '../../core/models';
@@ -106,6 +109,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 })
 export class TransactionListComponent {
   private readonly api = inject(ApiService);
+  private readonly router = inject(Router);
 
   filter = '';
 
@@ -116,7 +120,31 @@ export class TransactionListComponent {
 
   private pageNumber = 1;
 
+  /**
+   * The navigation that put this screen on display. The outlet builds the component during change
+   * detection, which can fall either side of that navigation's {@code NavigationEnd}, so the id is
+   * taken from whichever of the two the router can still name. Matching on it means the arrival
+   * already handled in the constructor is never loaded a second time, without assuming an ordering.
+   */
+  private readonly arrivedOn =
+    this.router.getCurrentNavigation()?.id ?? this.router.lastSuccessfulNavigation?.id ?? -1;
+
   constructor() {
+    // The router keeps this component alive when the sidebar entry for this screen is chosen
+    // again, so the constructor runs only on the first arrival. Without picking the later ones up
+    // here, a search that matched nothing would leave the screen empty and choosing Transactions
+    // again would appear to do nothing at all.
+    this.router.events
+      .pipe(
+        rxFilter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((event) => {
+        if (event.id !== this.arrivedOn && this.onTransactionList()) {
+          this.reset();
+        }
+      });
+
     this.load(null, 'first', 1);
   }
 
@@ -128,6 +156,11 @@ export class TransactionListComponent {
   reset(): void {
     this.filter = '';
     this.search();
+  }
+
+  /** True while this screen is the one on display, so navigations away are not acted on. */
+  private onTransactionList(): boolean {
+    return this.router.url.split('?')[0] === '/transactions';
   }
 
   next(): void {

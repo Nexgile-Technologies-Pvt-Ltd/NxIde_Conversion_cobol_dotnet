@@ -1,6 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 import { ApiService, errorField, errorMessage } from '../../core/api.service';
 import { CardRow, PageResult } from '../../core/models';
@@ -129,6 +131,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 export class CardListComponent {
   private readonly api = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   accountFilter = '';
   cardFilter = '';
@@ -140,12 +143,32 @@ export class CardListComponent {
 
   private pageNumber = 1;
 
+  /**
+   * The navigation that put this screen on display. The outlet builds the component during change
+   * detection, which can fall either side of that navigation's {@code NavigationEnd}, so the id is
+   * taken from whichever of the two the router can still name. Matching on it means the arrival
+   * already handled in the constructor is never loaded a second time, without assuming an ordering.
+   */
+  private readonly arrivedOn =
+    this.router.getCurrentNavigation()?.id ?? this.router.lastSuccessfulNavigation?.id ?? -1;
+
   constructor() {
-    const accountId = this.route.snapshot.queryParamMap.get('accountId');
-    if (accountId) {
-      this.accountFilter = accountId;
-    }
-    this.load(null, 'first', 1);
+    // The router keeps this component alive when it navigates here again, so the constructor runs
+    // only on the first arrival. Every later arrival -- an account jump adding ?accountId=, or the
+    // sidebar entry returning to the plain list -- has to be picked up from the event stream, or
+    // the screen keeps showing whatever the previous visit filtered it down to.
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((event) => {
+        if (event.id !== this.arrivedOn && this.onCardList()) {
+          this.applyRoute();
+        }
+      });
+
+    this.applyRoute();
   }
 
   search(): void {
@@ -153,10 +176,26 @@ export class CardListComponent {
     this.load(null, 'first', 1);
   }
 
+  /**
+   * Clearing has to take the account out of the address as well. Leaving it there would put the
+   * filter back the moment the screen was revisited or the page reloaded, contradicting the empty
+   * boxes on display. The navigation lands back here and reloads through {@link applyRoute}.
+   */
   reset(): void {
-    this.accountFilter = '';
+    this.router.navigate(['/cards'], { queryParams: {} });
+  }
+
+  /** True while this screen is the one on display, so navigations away are not acted on. */
+  private onCardList(): boolean {
+    return this.router.url.split('?')[0] === '/cards';
+  }
+
+  /** Takes the filters from the address bar and reloads, so the screen matches the URL. */
+  private applyRoute(): void {
+    this.accountFilter = this.route.snapshot.queryParamMap.get('accountId') ?? '';
     this.cardFilter = '';
-    this.search();
+    this.pageNumber = 1;
+    this.load(null, 'first', 1);
   }
 
   /** F8 forward paging starts at the current last key. */
