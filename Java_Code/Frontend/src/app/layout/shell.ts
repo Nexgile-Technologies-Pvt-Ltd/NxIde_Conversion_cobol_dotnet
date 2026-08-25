@@ -3,6 +3,7 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
 import { filter } from 'rxjs';
 
 import { AuthService } from '../core/auth.service';
+import { SystemStatusService } from '../core/system-status.service';
 import { IconComponent } from '../shared/icon';
 import { NavbarComponent } from './navbar';
 import { NAV_GROUPS } from './navigation';
@@ -53,9 +54,8 @@ import { NAV_GROUPS } from './navigation';
           }
         </nav>
 
-        <p class="cd-sidebar__foot">
-          Angular &rarr; Spring Boot &rarr; PostgreSQL
-          <small>Converted from the CardDemo COBOL estate</small>
+        <p class="cd-sidebar__status" [attr.data-state]="system.status()">
+          <i aria-hidden="true"></i>{{ system.label() }}
         </p>
       </aside>
 
@@ -75,6 +75,7 @@ import { NAV_GROUPS } from './navigation';
 })
 export class ShellComponent {
   readonly auth = inject(AuthService);
+  readonly system = inject(SystemStatusService);
   private readonly router = inject(Router);
 
   readonly menuOpen = signal(false);

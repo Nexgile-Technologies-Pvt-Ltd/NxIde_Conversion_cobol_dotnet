@@ -4,5 +4,7 @@
  */
 export const environment = {
   production: true,
+  /** Actuator health probe, used by the sidebar status indicator. Unauthenticated. */
+  healthUrl: '/actuator/health',
   apiBaseUrl: '/api',
 };
