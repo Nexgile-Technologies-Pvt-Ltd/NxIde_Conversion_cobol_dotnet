@@ -84,7 +84,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 
       <div class="cd-pfkeys">
         <button type="button" class="cd-primary" [disabled]="busy()" (click)="submit()">
-          <span class="cd-pfkey__label">Enter</span>Submit request
+          Submit request
         </button>
         <button type="button" (click)="reload()">Refresh list</button>
       </div>
@@ -137,7 +137,14 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
                   <td>
                     <div class="cd-row-actions">
                       @if (row.status !== 'COMPLETED') {
-                        <button type="button" class="cd-small" (click)="generate(row)">Generate</button>
+                        <button
+                          type="button"
+                          class="cd-small"
+                          [disabled]="generatingId() !== null"
+                          (click)="generate(row)"
+                        >
+                          {{ generatingId() === row.id ? 'Generating ...' : 'Generate' }}
+                        </button>
                       } @else {
                         <button type="button" class="cd-small" (click)="open(row)">Open</button>
                       }
@@ -186,6 +193,9 @@ export class ReportRequestComponent {
   readonly field = signal<string | null>(null);
   readonly busy = signal(false);
 
+  /** Rendering a year of transactions takes seconds; without this the job can be fired twice. */
+  readonly generatingId = signal<number | null>(null);
+
   constructor() {
     this.reload();
   }
@@ -232,13 +242,16 @@ export class ReportRequestComponent {
 
   generate(row: ReportRequestDto): void {
     this.message.set(null);
+    this.generatingId.set(row.id);
     this.api.generateReport(row.id).subscribe({
       next: () => {
+        this.generatingId.set(null);
         this.kind.set('ok');
         this.message.set(`Report ${row.id} generated.`);
         this.reload();
       },
       error: (error: unknown) => {
+        this.generatingId.set(null);
         this.kind.set('error');
         this.message.set(errorMessage(error));
       },

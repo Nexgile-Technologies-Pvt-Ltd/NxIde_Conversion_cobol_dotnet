@@ -92,7 +92,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
                   <td>
                     <div class="cd-row-actions">
                       <a class="cd-btn cd-small" [routerLink]="['/admin/users/update', row.userId]">
-                        U Update
+                        Update
                       </a>
                       <button
                         type="button"
@@ -100,7 +100,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
                         [disabled]="row.userId === auth.user()?.userId"
                         (click)="confirmDelete(row)"
                       >
-                        D Delete
+                        Delete
                       </button>
                     </div>
                   </td>
@@ -117,13 +117,13 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 
       <div class="cd-pfkeys">
         <button type="button" [disabled]="!page()?.hasPrevious" (click)="previous()">
-          <span class="cd-pfkey__label">F7</span>Previous page
+          Previous page
         </button>
         <button type="button" [disabled]="!page()?.hasNext" (click)="next()">
-          <span class="cd-pfkey__label">F8</span>Next page
+          Next page
         </button>
         <a class="cd-btn" routerLink="/admin-menu">
-          <span class="cd-pfkey__label">F3</span>Admin menu
+          Admin menu
         </a>
       </div>
     </div>

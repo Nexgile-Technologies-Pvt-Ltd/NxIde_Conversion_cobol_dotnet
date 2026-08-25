@@ -226,10 +226,10 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 
         <div class="cd-pfkeys">
           <button type="button" (click)="clear()">
-            <span class="cd-pfkey__label">F3</span>Return
+            Return
           </button>
           <button type="button" (click)="fetch()">
-            <span class="cd-pfkey__label">Enter</span>Refresh
+            Refresh
           </button>
         </div>
       </div>

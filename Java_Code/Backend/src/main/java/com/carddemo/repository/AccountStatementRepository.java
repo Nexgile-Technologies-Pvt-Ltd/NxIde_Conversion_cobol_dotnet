@@ -17,4 +17,12 @@ public interface AccountStatementRepository extends JpaRepository<AccountStateme
     Optional<AccountStatement> findFirstByCardNumberOrderByGeneratedAtDesc(String cardNumber);
 
     List<AccountStatement> findByAccountIdOrderByGeneratedAtDesc(String accountId);
+
+    /**
+     * Remove the statements already held for a card.
+     *
+     * <p>{@code CBSTM03A} writes {@code FD-STMTFILE} afresh on every run, so a re-run supersedes
+     * the previous statement rather than adding a second one beside it.</p>
+     */
+    void deleteByCardNumber(String cardNumber);
 }

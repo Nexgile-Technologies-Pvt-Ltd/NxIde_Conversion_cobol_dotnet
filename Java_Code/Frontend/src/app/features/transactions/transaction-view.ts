@@ -40,13 +40,13 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
             aria-label="Transaction ID"
           />
           <button type="submit" class="cd-primary">
-            <span class="cd-pfkey__label">Enter</span>Fetch
+            Fetch
           </button>
           <button type="button" (click)="clear()">
-            <span class="cd-pfkey__label">F4</span>Clear
+            Clear
           </button>
           <a class="cd-btn" routerLink="/transactions">
-            <span class="cd-pfkey__label">F5</span>Transaction list
+            Transaction list
           </a>
         </form>
       </div>

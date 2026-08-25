@@ -39,15 +39,15 @@ public final class UserDtos {
      */
     public record UserCreateRequest(
             @NotBlank(message = "First Name can NOT be empty...")
-            @Size(max = 20)
+            @Size(max = 20, message = "First Name can be a maximum of 20 characters")
             String firstName,
 
             @NotBlank(message = "Last Name can NOT be empty...")
-            @Size(max = 20)
+            @Size(max = 20, message = "Last Name can be a maximum of 20 characters")
             String lastName,
 
             @NotBlank(message = "User ID can NOT be empty...")
-            @Size(max = 8)
+            @Size(max = 8, message = "User ID can be a maximum of 8 characters")
             String userId,
 
             @NotBlank(message = "Password can NOT be empty...")

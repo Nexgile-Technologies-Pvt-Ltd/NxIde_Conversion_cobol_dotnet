@@ -33,10 +33,10 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
           <h2>Key</h2>
           <div class="cd-actions">
             <button type="button" (click)="copyLatest()">
-              <span class="cd-pfkey__label">F5</span>Copy last transaction
+              Copy last transaction
             </button>
             <button type="button" (click)="clear()">
-              <span class="cd-pfkey__label">F4</span>Clear
+              Clear
             </button>
           </div>
         </div>
@@ -95,16 +95,20 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
               <select
                 id="categoryCode"
                 name="categoryCode"
+                [disabled]="!model.typeCode"
                 [class.cd-invalid]="field() === 'categoryCode'"
                 [(ngModel)]="model.categoryCode"
               >
-                <option value="">-- select --</option>
+                <option value="">
+                  {{ model.typeCode ? '-- select --' : '-- choose a type first --' }}
+                </option>
                 @for (category of categoriesForType(); track category.categoryCode) {
                   <option [value]="category.categoryCode">
                     {{ category.categoryCode }} &nbsp; {{ category.description }}
                   </option>
                 }
               </select>
+              <span class="cd-field__hint">Categories are keyed by (type, category)</span>
             </div>
             <div class="cd-field">
               <label for="source">Source</label>
@@ -225,10 +229,10 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 
         <div class="cd-pfkeys">
           <button type="submit" class="cd-primary" [disabled]="busy()">
-            <span class="cd-pfkey__label">Enter</span>Add transaction
+            Add transaction
           </button>
           <a class="cd-btn" routerLink="/transactions">
-            <span class="cd-pfkey__label">F3</span>Return
+            Return
           </a>
         </div>
       </div>
@@ -258,10 +262,15 @@ export class TransactionAddComponent {
     });
   }
 
-  /** Categories are keyed by (type, category), so the list narrows once a type is chosen. */
+  /**
+   * Categories are keyed by {@code (type, category)}, so the same code means different things
+   * under different types: {@code 0001} is a sales draft under 01 and a cash payment under 02.
+   * Listing them all before a type is chosen would offer six indistinguishable "0001" rows, so
+   * the picker stays empty until the type narrows it.
+   */
   categoriesForType(): TransactionCategoryDto[] {
     const type = this.model.typeCode;
-    return type ? this.categories().filter((c) => c.typeCode === type) : this.categories();
+    return type ? this.categories().filter((c) => c.typeCode === type) : [];
   }
 
   onTypeChange(): void {

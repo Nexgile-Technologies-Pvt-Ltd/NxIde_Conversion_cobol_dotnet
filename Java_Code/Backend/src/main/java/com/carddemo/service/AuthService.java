@@ -113,10 +113,9 @@ public class AuthService {
             throw new ApiException(org.springframework.http.HttpStatus.UNAUTHORIZED, GENERIC_FAILURE, "password");
         }
 
-        user.setFailedAttempts(0);
-        user.setLockedUntil(null);
-        user.setLastLoginAt(LocalDateTime.now());
-        users.save(user);
+        // Bookkeeping only: written straight to the columns so a sign-on never bumps the profile
+        // version and invalidates an administrator's open Update User screen.
+        users.recordSignOn(user.getUserId(), LocalDateTime.now());
 
         UserProfile profile = toProfile(user);
         String token = jwtService.issue(user.getUserId(), user.getUserType(), displayName(user));
@@ -210,12 +209,12 @@ public class AuthService {
 
     private void registerFailure(AppUser user) {
         int attempts = user.getFailedAttempts() + 1;
-        user.setFailedAttempts(attempts);
+        LocalDateTime lockedUntil = null;
         if (attempts >= properties.getSecurity().getMaxFailedAttempts()) {
-            user.setLockedUntil(LocalDateTime.now().plusMinutes(properties.getSecurity().getLockMinutes()));
-            user.setFailedAttempts(0);
+            lockedUntil = LocalDateTime.now().plusMinutes(properties.getSecurity().getLockMinutes());
+            attempts = 0;
         }
-        users.save(user);
+        users.recordSignOnFailure(user.getUserId(), attempts, lockedUntil);
     }
 
     private void validatePasswordPolicy(String password) {

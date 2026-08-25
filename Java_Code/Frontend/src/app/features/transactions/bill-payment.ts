@@ -41,10 +41,10 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
             aria-label="Account number"
           />
           <button type="submit" class="cd-primary">
-            <span class="cd-pfkey__label">Enter</span>Fetch
+            Fetch
           </button>
           <button type="button" (click)="clear()">
-            <span class="cd-pfkey__label">F4</span>Clear
+            Clear
           </button>
         </form>
       </div>
@@ -90,7 +90,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
             Pay full balance
           </button>
           <a class="cd-btn" routerLink="/main-menu">
-            <span class="cd-pfkey__label">F3</span>Return
+            Return
           </a>
         </div>
       </div>

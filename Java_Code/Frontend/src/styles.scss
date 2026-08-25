@@ -789,7 +789,7 @@ button.cd-small {
   font-size: 12px;
 }
 
-/* Function-key bar echoing the BMS footer line. */
+/* The row of secondary actions that closes a panel. */
 .cd-pfkeys {
   display: flex;
   gap: 7px;
@@ -803,15 +803,15 @@ button.cd-small {
 .cd-pfkeys button {
   font-family: var(--cd-mono);
   font-size: 12px;
-  background: #fff;
 }
 
-/* The key name shown before an action label, wherever that action appears. */
-.cd-pfkey__label {
-  color: var(--cd-primary);
-  font-weight: 700;
-  margin-right: 6px;
-  font-family: var(--cd-mono);
+/*
+ * The plain keys in the bar sit on white; the variants keep their own fill. Without the
+ * exclusion the white background won over `button.cd-primary` while its white text did not,
+ * which left every Save, Add and Confirm key in the bar reading as an empty box.
+ */
+.cd-pfkeys button:not(.cd-primary):not(.cd-danger):not(.cd-ghost) {
+  background: #fff;
 }
 
 /* ------------------------------------------------------------------ messages */
@@ -1167,7 +1167,7 @@ table.cd-table td.cd-mono {
 }
 
 .cd-brand__headline h1 {
-  font-size: clamp(26px, 2.9vw, 39px);
+  font-size: clamp(22px, 2.4vw, 32px);
   font-weight: 700;
   line-height: 1.12;
   letter-spacing: -0.02em;

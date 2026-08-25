@@ -150,8 +150,9 @@ public class AccountService {
         reject(fields.mandatory("Address Line 1", request.addressLine1()), "addressLine1");
         // 15. state
         reject(fields.stateCode(request.stateCode()), "stateCode");
-        // 16. ZIP
-        reject(fields.numericRequired("Zip", CobolText.trim(request.zipCode()), 5), "zipCode");
+        // 16. ZIP. The BMS map edits five cells while storage is X(10), so only the postal code
+        // proper is validated and any ZIP+4 remainder is carried through untouched.
+        reject(fields.numericRequired("Zip", postalCode(request.zipCode()), 5), "zipCode");
         // 17. city (address line 3 in storage)
         reject(fields.mandatory("City", request.city()), "city");
         // 18. country
@@ -166,7 +167,7 @@ public class AccountService {
         reject(fields.yesNo("Primary Card Holder", request.primaryCardHolderIndicator()),
                 "primaryCardHolderIndicator");
         // 23. state and the first two ZIP digits must be a valid combination
-        reject(fields.stateZipCombination(request.stateCode(), request.zipCode()), "zipCode");
+        reject(fields.stateZipCombination(request.stateCode(), postalCode(request.zipCode())), "zipCode");
 
         account.setActiveStatus(CobolText.trim(request.activeStatus()).toUpperCase());
         account.setOpenDate(CobolText.trim(request.openDate()));
@@ -261,6 +262,18 @@ public class AccountService {
     private static BigDecimal amount(String value) {
         BigDecimal parsed = CobolFieldValidator.parseNumvalC(value);
         return parsed == null ? BigDecimal.ZERO : parsed.setScale(2, java.math.RoundingMode.HALF_UP);
+    }
+
+    /**
+     * The postal code proper: the first five characters of a stored ZIP.
+     *
+     * <p>{@code CUST-ADDR-ZIP} is {@code X(10)} while the BMS map exposes five cells, so a stored
+     * ZIP+4 such as {@code 19852-6716} presents and edits as {@code 19852}. Validating the whole
+     * stored value would reject legitimate data the loader accepted.</p>
+     */
+    private static String postalCode(String zip) {
+        String value = CobolText.trim(zip);
+        return value.length() > 5 ? value.substring(0, 5) : value;
     }
 
     /** Strips formatting so {@code (908)119-8310} and {@code 9081198310} behave identically. */

@@ -114,13 +114,13 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 
           <div class="cd-pfkeys">
             <button type="submit" class="cd-primary" [disabled]="busy()">
-              <span class="cd-pfkey__label">F5</span>Save
+              Save
             </button>
             <button type="button" (click)="cancel()">
-              <span class="cd-pfkey__label">F12</span>Cancel
+              Cancel
             </button>
             <a class="cd-btn" routerLink="/admin/users">
-              <span class="cd-pfkey__label">F3</span>Return without saving
+              Return without saving
             </a>
           </div>
         </div>

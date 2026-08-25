@@ -77,9 +77,9 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
                   <td>{{ row.description }}</td>
                   <td>
                     <div class="cd-row-actions">
-                      <button type="button" class="cd-small" (click)="edit(row)">U Update</button>
+                      <button type="button" class="cd-small" (click)="edit(row)">Update</button>
                       <button type="button" class="cd-small cd-danger" (click)="askDelete(row)">
-                        D Delete
+                        Delete
                       </button>
                       <button type="button" class="cd-small" (click)="loadCategories(row.typeCode)">
                         Categories
@@ -99,16 +99,16 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 
       <div class="cd-pfkeys">
         <button type="button" [disabled]="!page()?.hasPrevious" (click)="previous()">
-          <span class="cd-pfkey__label">F7</span>Previous page
+          Previous page
         </button>
         <button type="button" [disabled]="!page()?.hasNext" (click)="next()">
-          <span class="cd-pfkey__label">F8</span>Next page
+          Next page
         </button>
         <button type="button" (click)="startNew()">
-          <span class="cd-pfkey__label">F2</span>New type
+          New type
         </button>
         <a class="cd-btn" routerLink="/admin-menu">
-          <span class="cd-pfkey__label">F3</span>Admin menu
+          Admin menu
         </a>
       </div>
     </div>
@@ -149,7 +149,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
           </div>
           <div class="cd-pfkeys">
             <button type="submit" class="cd-primary" [disabled]="busy()">
-              <span class="cd-pfkey__label">F10</span>Confirm
+              Confirm
             </button>
             <button type="button" (click)="editing.set(false)">Cancel</button>
           </div>
@@ -170,6 +170,27 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
           <div class="cd-actions" style="margin-top: 14px">
             <button type="button" class="cd-danger" (click)="doDelete(target)">Yes, delete</button>
             <button type="button" (click)="pendingDelete.set(null)">Cancel</button>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (pendingCategoryDelete(); as target) {
+      <div class="cd-panel" style="max-width: 640px">
+        <div class="cd-panel__head">
+          <h2>Confirm deletion</h2>
+        </div>
+        <div class="cd-panel__body">
+          <p>
+            Delete category
+            <strong class="cd-mono">{{ target.typeCode }}/{{ target.categoryCode }}</strong>
+            ({{ target.description }})?
+          </p>
+          <div class="cd-actions" style="margin-top: 14px">
+            <button type="button" class="cd-danger" (click)="doDeleteCategory(target)">
+              Yes, delete
+            </button>
+            <button type="button" (click)="pendingCategoryDelete.set(null)">Cancel</button>
           </div>
         </div>
       </div>
@@ -204,7 +225,16 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
                       />
                     </td>
                     <td>
-                      <button type="button" class="cd-small" (click)="saveCategory(row)">Save</button>
+                      <div class="cd-row-actions">
+                        <button type="button" class="cd-small" (click)="saveCategory(row)">Save</button>
+                        <button
+                          type="button"
+                          class="cd-small cd-danger"
+                          (click)="pendingCategoryDelete.set(row)"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 }
@@ -230,6 +260,7 @@ export class TransactionTypeAdminComponent {
   readonly editing = signal(false);
   readonly isNew = signal(false);
   readonly pendingDelete = signal<TransactionTypeDto | null>(null);
+  readonly pendingCategoryDelete = signal<TransactionCategoryDto | null>(null);
   readonly categories = signal<TransactionCategoryDto[]>([]);
   readonly categoryType = signal('');
   readonly message = signal<string | null>(null);
@@ -337,6 +368,27 @@ export class TransactionTypeAdminComponent {
       error: (error: unknown) => {
         this.kind.set('error');
         this.message.set(errorMessage(error));
+      },
+    });
+  }
+
+  /**
+   * Remove a category. Without this a category added in error could never be taken away, and the
+   * type owning it could never be deleted either, because that delete refuses while categories
+   * remain.
+   */
+  doDeleteCategory(row: TransactionCategoryDto): void {
+    this.pendingCategoryDelete.set(null);
+    this.api.deleteTransactionCategory(row.typeCode, row.categoryCode).subscribe({
+      next: (result) => {
+        this.kind.set('ok');
+        this.message.set(result.message);
+        this.loadCategories(row.typeCode);
+      },
+      error: (error: unknown) => {
+        this.kind.set('error');
+        this.message.set(errorMessage(error));
+        this.field.set(errorField(error));
       },
     });
   }

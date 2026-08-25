@@ -88,10 +88,10 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
             [disabled]="!confirmed || isSelf(user) || busy()"
             (click)="remove(user)"
           >
-            <span class="cd-pfkey__label">F5</span>Delete
+            Delete
           </button>
           <a class="cd-btn" routerLink="/admin/users">
-            <span class="cd-pfkey__label">F3</span>Return
+            Return
           </a>
         </div>
       </div>

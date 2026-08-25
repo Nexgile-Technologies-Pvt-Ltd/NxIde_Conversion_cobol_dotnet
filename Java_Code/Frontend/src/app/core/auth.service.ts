@@ -23,6 +23,10 @@ export class AuthService {
 
   private readonly tokenSignal = signal<string | null>(readStorage(TOKEN_KEY));
   private readonly userSignal = signal<UserProfile | null>(readUser());
+  private readonly signingOffSignal = signal(false);
+
+  /** True while a sign-off is leaving the protected area, before the session is cleared. */
+  readonly isSigningOff = this.signingOffSignal.asReadonly();
 
   readonly user = this.userSignal.asReadonly();
   readonly isAuthenticated = computed(() => this.tokenSignal() !== null);
@@ -82,17 +86,28 @@ export class AuthService {
       .pipe(tap((user) => this.setUser(user)));
   }
 
-  /** Sign off. Records the audit event, then clears local state and returns to the sign-on screen. */
-  logout(navigate = true): void {
+  /**
+   * Sign off. Records the audit event, leaves the protected area, and only then clears the
+   * session.
+   *
+   * <p>The order matters. The role is read straight from the cached profile, so clearing first
+   * drops it while the shell is still on screen: an administrator's sidebar repaints as a regular
+   * user's for the frame between the click and the sign-on screen arriving. Leaving first means
+   * the shell is torn down while its role still holds.</p>
+   */
+  async logout(): Promise<void> {
     if (this.tokenSignal()) {
       this.http.post(`${environment.apiBaseUrl}/auth/logout`, {}).subscribe({
         next: () => undefined,
         error: () => undefined,
       });
     }
-    this.clear();
-    if (navigate) {
-      void this.router.navigate(['/login']);
+    this.signingOffSignal.set(true);
+    try {
+      await this.router.navigate(['/login']);
+    } finally {
+      this.signingOffSignal.set(false);
+      this.clear();
     }
   }
 

@@ -34,12 +34,18 @@ export const adminGuard: CanActivateFn = () => {
   return router.createUrlTree(['/main-menu'], { queryParams: { denied: '1' } });
 };
 
-/** Keeps a signed-on user away from the sign-on and sign-up screens. */
+/**
+ * Keeps a signed-on user away from the sign-on and sign-up screens.
+ *
+ * <p>A sign-off in flight still holds a session, because it is cleared only once the sign-on
+ * screen has been reached. It is let through on that basis; turning it back here would strand
+ * the sign-off on the screen it was leaving.</p>
+ */
 export const anonymousGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  if (!auth.isAuthenticated()) {
+  if (!auth.isAuthenticated() || auth.isSigningOff()) {
     return true;
   }
   return router.createUrlTree(['/dashboard']);

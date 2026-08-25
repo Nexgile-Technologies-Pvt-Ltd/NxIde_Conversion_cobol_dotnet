@@ -57,6 +57,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
 
     long countByCardNumber(String cardNumber);
 
+    /** Referential guard for transaction type maintenance. */
+    long countByTypeCode(String typeCode);
+
+    /** Referential guard for transaction category maintenance. */
+    long countByTypeCodeAndCategoryCode(String typeCode, String categoryCode);
+
     /** Transaction volume per type code, used by the dashboard. */
     @Query("select t.typeCode, count(t) from Transaction t group by t.typeCode order by t.typeCode asc")
     List<Object[]> countByTypeCode();

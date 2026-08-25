@@ -92,7 +92,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 
         <div class="cd-pfkeys">
           <a class="cd-btn" routerLink="/cards">
-            <span class="cd-pfkey__label">F3</span>Return to list
+            Return to list
           </a>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, computed, inject, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -17,7 +17,7 @@ import { resolveBreadcrumb } from './navigation';
  */
 @Component({
   selector: 'cd-navbar',
-  imports: [FormsModule, RouterLink, IconComponent],
+  imports: [FormsModule, IconComponent],
   template: `
     <header class="cd-navbar">
       <div class="cd-navbar__inner">
@@ -73,13 +73,9 @@ import { resolveBreadcrumb } from './navigation';
                 <strong>{{ auth.user()?.userId }}</strong>
                 <span>{{ auth.isAdmin() ? 'Role A - Administrator' : 'Role U - Regular user' }}</span>
               </div>
-              <a routerLink="/change-password" role="menuitem" (click)="open.set(false)">
-                <cd-icon name="lock" [size]="16" />
-                Change password
-              </a>
               <button type="button" role="menuitem" class="cd-usermenu__signoff" (click)="signOff()">
                 <cd-icon name="logout" [size]="16" />
-                Sign off
+                Sign out
               </button>
             </div>
           }
@@ -132,8 +128,7 @@ export class NavbarComponent {
 
   signOff(): void {
     this.open.set(false);
-    this.auth.logout(false);
-    void this.router.navigate(['/login']);
+    void this.auth.logout();
   }
 
   @HostListener('document:click', ['$event'])

@@ -70,6 +70,16 @@ public class AdminTransactionTypeController {
                 referenceData.deleteType(CurrentUser.id(), typeCode, confirm)));
     }
 
+    @DeleteMapping("/{typeCode}/categories/{categoryCode}")
+    @Operation(summary = "Delete one transaction category; confirmation is required")
+    public ResponseEntity<Map<String, String>> deleteCategory(
+            @PathVariable("typeCode") String typeCode,
+            @PathVariable("categoryCode") String categoryCode,
+            @RequestParam(value = "confirm", defaultValue = "false") boolean confirm) {
+        return ResponseEntity.ok(Map.of("message",
+                referenceData.deleteCategory(CurrentUser.id(), typeCode, categoryCode, confirm)));
+    }
+
     @PutMapping("/{typeCode}/categories/{categoryCode}")
     @Operation(summary = "Create or update one transaction category")
     public TransactionCategoryDto saveCategory(@PathVariable("typeCode") String typeCode,

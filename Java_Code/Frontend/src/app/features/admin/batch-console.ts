@@ -202,8 +202,31 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
       <div class="cd-panel__head">
         <h2>Data load</h2>
         <div class="cd-actions">
-          <button type="button" class="cd-small" (click)="loadMigration()">Refresh</button>
-          <button type="button" class="cd-small" (click)="runMigration()">Re-run load</button>
+          <button type="button" class="cd-small" [disabled]="busy()" (click)="loadMigration()">
+            Refresh
+          </button>
+          @if (confirmMigration()) {
+            <button
+              type="button"
+              class="cd-small cd-danger"
+              [disabled]="busy()"
+              (click)="runMigration()"
+            >
+              Yes, re-run the load
+            </button>
+            <button type="button" class="cd-small" (click)="confirmMigration.set(false)">
+              Cancel
+            </button>
+          } @else {
+            <button
+              type="button"
+              class="cd-small"
+              [disabled]="busy()"
+              (click)="confirmMigration.set(true)"
+            >
+              Re-run load
+            </button>
+          }
         </div>
       </div>
       <div class="cd-panel__body cd-panel__body--flush">
@@ -259,6 +282,9 @@ export class BatchConsoleComponent {
   readonly kind = signal<'error' | 'ok' | 'info'>('info');
   readonly field = signal<string | null>(null);
   readonly busy = signal(false);
+
+  /** Re-reading every source file rewrites the whole estate, so it is armed before it runs. */
+  readonly confirmMigration = signal(false);
 
   constructor() {
     this.reload();
@@ -316,6 +342,7 @@ export class BatchConsoleComponent {
   }
 
   runMigration(): void {
+    this.confirmMigration.set(false);
     this.start('MIGRATION');
     this.api.runMigration().subscribe({
       next: (rows) => {

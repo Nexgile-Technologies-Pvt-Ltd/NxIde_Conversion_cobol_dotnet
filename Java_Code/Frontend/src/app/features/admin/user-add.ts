@@ -90,13 +90,13 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 
         <div class="cd-pfkeys">
           <button type="submit" class="cd-primary" [disabled]="busy()">
-            <span class="cd-pfkey__label">Enter</span>Add user
+            Add user
           </button>
           <button type="button" (click)="clear()">
-            <span class="cd-pfkey__label">F4</span>Clear
+            Clear
           </button>
           <a class="cd-btn" routerLink="/admin/users">
-            <span class="cd-pfkey__label">F3</span>Return
+            Return
           </a>
         </div>
       </div>

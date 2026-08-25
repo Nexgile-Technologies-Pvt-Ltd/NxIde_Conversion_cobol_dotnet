@@ -315,6 +315,13 @@ export class ApiService {
     );
   }
 
+  deleteTransactionCategory(typeCode: string, categoryCode: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(
+      `${this.base}/admin/transaction-types/${encodeURIComponent(typeCode)}/categories/${encodeURIComponent(categoryCode)}`,
+      { params: new HttpParams().set('confirm', true) },
+    );
+  }
+
   /* ------------------------------------------------------------------ reports and statements (CR00 / TRANREPT / CREASTMT) */
 
   submitReport(payload: ReportRequestInput): Observable<ReportRequestDto> {

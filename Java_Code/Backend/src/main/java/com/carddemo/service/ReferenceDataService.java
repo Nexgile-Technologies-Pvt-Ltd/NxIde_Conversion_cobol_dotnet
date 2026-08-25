@@ -12,6 +12,7 @@ import com.carddemo.dto.PageResult;
 import com.carddemo.repository.CategoryBalanceRepository;
 import com.carddemo.repository.DisclosureGroupRepository;
 import com.carddemo.repository.TransactionCategoryRepository;
+import com.carddemo.repository.TransactionRepository;
 import com.carddemo.repository.TransactionTypeRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -45,15 +46,18 @@ public class ReferenceDataService {
     private final TransactionCategoryRepository categories;
     private final DisclosureGroupRepository disclosureGroups;
     private final CategoryBalanceRepository categoryBalances;
+    private final TransactionRepository transactions;
     private final AuditService audit;
 
     public ReferenceDataService(TransactionTypeRepository types, TransactionCategoryRepository categories,
                                 DisclosureGroupRepository disclosureGroups,
-                                CategoryBalanceRepository categoryBalances, AuditService audit) {
+                                CategoryBalanceRepository categoryBalances,
+                                TransactionRepository transactions, AuditService audit) {
         this.types = types;
         this.categories = categories;
         this.disclosureGroups = disclosureGroups;
         this.categoryBalances = categoryBalances;
+        this.transactions = transactions;
         this.audit = audit;
     }
 
@@ -203,6 +207,12 @@ public class ReferenceDataService {
             throw ApiException.conflict(
                     "Transaction type still has categories and cannot be deleted ...", "typeCode");
         }
+        // Removing a type still in use would leave those transactions with an unresolvable
+        // description on the view screen, so the reference is checked before the delete.
+        if (transactions.countByTypeCode(typeCode) > 0) {
+            throw ApiException.conflict(
+                    "Transaction type is used by existing transactions and cannot be deleted ...", "typeCode");
+        }
         types.delete(existing);
         audit.success(actor, "TRAN_TYPE_DELETE", "TransactionType", typeCode, null);
         return "Transaction type " + typeCode + " has been deleted ...";
@@ -236,6 +246,35 @@ public class ReferenceDataService {
         audit.success(actor, "TRAN_CATEGORY_UPDATE", "TransactionCategory",
                 typeCode + "/" + categoryCode, description);
         return new TransactionCategoryDto(typeCode, categoryCode, description, existing.getVersion());
+    }
+
+    /**
+     * Category deletion, on the same terms as type deletion: confirmation is required and a
+     * category still referenced by a transaction is refused.
+     *
+     * <p>Without this a category created in error could never be removed, and the type that owns
+     * it could never be deleted either, because {@link #deleteType} refuses while categories
+     * remain.</p>
+     */
+    @Transactional
+    public String deleteCategory(String actor, String rawTypeCode, String rawCategoryCode, boolean confirmed) {
+        String typeCode = validateTypeCode(rawTypeCode);
+        String categoryCode = validateCategoryCode(rawCategoryCode);
+        if (!confirmed) {
+            throw ApiException.badRequest(
+                    "Please confirm the deletion of category " + typeCode + "/" + categoryCode + " ...",
+                    "confirmed");
+        }
+        TransactionCategory existing = categories.findById(new TransactionCategory.Key(typeCode, categoryCode))
+                .orElseThrow(() -> ApiException.notFound("Transaction category NOT found...", "categoryCode"));
+        if (transactions.countByTypeCodeAndCategoryCode(typeCode, categoryCode) > 0) {
+            throw ApiException.conflict(
+                    "Transaction category is used by existing transactions and cannot be deleted ...",
+                    "categoryCode");
+        }
+        categories.delete(existing);
+        audit.success(actor, "TRAN_CATEGORY_DELETE", "TransactionCategory", typeCode + "/" + categoryCode, null);
+        return "Transaction category " + typeCode + "/" + categoryCode + " has been deleted ...";
     }
 
     /** Two numeric characters, non-zero. */

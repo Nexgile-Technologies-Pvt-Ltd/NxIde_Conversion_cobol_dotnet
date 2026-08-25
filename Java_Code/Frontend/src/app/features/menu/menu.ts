@@ -44,7 +44,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
             [(ngModel)]="option"
             aria-label="Option number"
           />
-          <button type="submit">Enter</button>
+          <button type="submit">Go</button>
         </form>
       </div>
 

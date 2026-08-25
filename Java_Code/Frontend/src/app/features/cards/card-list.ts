@@ -95,9 +95,9 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
                   </td>
                   <td>
                     <div class="cd-row-actions">
-                      <a class="cd-btn cd-small" [routerLink]="['/cards/view', row.cardNumber]">S View</a>
+                      <a class="cd-btn cd-small" [routerLink]="['/cards/view', row.cardNumber]">View</a>
                       <a class="cd-btn cd-small" [routerLink]="['/cards/update', row.cardNumber]">
-                        U Update
+                        Update
                       </a>
                     </div>
                   </td>
@@ -114,13 +114,13 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 
       <div class="cd-pfkeys">
         <button type="button" [disabled]="!page()?.hasPrevious" (click)="previous()">
-          <span class="cd-pfkey__label">F7</span>Previous page
+          Previous page
         </button>
         <button type="button" [disabled]="!page()?.hasNext" (click)="next()">
-          <span class="cd-pfkey__label">F8</span>Next page
+          Next page
         </button>
         <button type="button" (click)="reset()">
-          <span class="cd-pfkey__label">F3</span>Return
+          Return
         </button>
       </div>
     </div>

@@ -108,6 +108,9 @@ public class StatementService {
                     continue;
                 }
                 List<Transaction> cardTransactions = byCard.getOrDefault(xref.getCardNumber(), List.of());
+                // The source rewrites its output file, so a re-run supersedes the card's previous
+                // statement instead of leaving two rows for the same card on the statement screen.
+                statements.deleteByCardNumber(xref.getCardNumber());
                 AccountStatement statement = build(run.getId(), xref, account, customer, cardTransactions);
                 statements.save(statement);
                 generated++;
