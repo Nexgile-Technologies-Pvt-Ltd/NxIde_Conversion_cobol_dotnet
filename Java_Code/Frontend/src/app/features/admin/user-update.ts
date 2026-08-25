@@ -50,7 +50,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
 
     @if (detail(); as user) {
       <form (ngSubmit)="save()">
-        <div class="cd-panel" style="max-width: 760px">
+        <div class="cd-panel">
           <div class="cd-panel__head">
             <h2>User {{ user.userId }}</h2>
             <span class="cd-inline-note">

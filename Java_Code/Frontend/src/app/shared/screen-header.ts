@@ -7,8 +7,8 @@ import { Component, Input, OnDestroy, signal } from '@angular/core';
  * <p>The BMS maps this application was converted from also carried a transaction id, a program
  * name and the source file each screen came from. Those identified the screen to someone working
  * a 3270; they mean nothing to someone working this one, so the header states the screen in its
- * own terms. The transaction ids remain in the breadcrumb and the sidebar, which is where they
- * are useful for tracing a screen back to its source.</p>
+ * own terms. The transaction ids remain in the sidebar, which is where they are useful for
+ * tracing a screen back to its source.</p>
  */
 @Component({
   selector: 'cd-screen-header',

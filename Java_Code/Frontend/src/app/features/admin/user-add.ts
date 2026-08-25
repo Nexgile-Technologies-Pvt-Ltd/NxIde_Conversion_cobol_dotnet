@@ -27,7 +27,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
     <cd-message [text]="message()" [kind]="kind()" />
 
     <form (ngSubmit)="submit()">
-      <div class="cd-panel" style="max-width: 720px">
+      <div class="cd-panel">
         <div class="cd-panel__body">
           <div class="cd-grid">
             <div class="cd-field">

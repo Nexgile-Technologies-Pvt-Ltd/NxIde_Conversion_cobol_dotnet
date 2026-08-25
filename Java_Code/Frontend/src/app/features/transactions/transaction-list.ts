@@ -21,7 +21,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   template: `
     <cd-screen-header
       title="Transaction list"
-      subtitle="Ten rows per page; S opens the detail screen"
+      subtitle="Ten rows per page, with the detail screen on each row"
     />
 
     <div class="cd-panel">

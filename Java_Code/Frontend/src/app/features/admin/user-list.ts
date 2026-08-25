@@ -21,7 +21,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
   template: `
     <cd-screen-header
       title="Security users"
-      subtitle="Ten rows per page; U updates a user, D deletes one"
+      subtitle="Ten rows per page, with update and delete on each row"
     />
 
     <div class="cd-panel">

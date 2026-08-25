@@ -47,7 +47,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
     <cd-message [text]="message()" [kind]="kind()" />
 
     @if (detail(); as user) {
-      <div class="cd-panel" style="max-width: 640px">
+      <div class="cd-panel">
         <div class="cd-panel__head">
           <h2>User {{ user.userId }}</h2>
         </div>

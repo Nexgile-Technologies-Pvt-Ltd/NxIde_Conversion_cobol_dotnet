@@ -22,7 +22,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
       subtitle="Credentials are stored as salted hashes; no password is ever displayed."
     />
 
-    <div class="cd-panel" style="max-width: 520px">
+    <div class="cd-panel">
       <div class="cd-panel__body">
         <cd-message [text]="message()" [kind]="kind()" />
 

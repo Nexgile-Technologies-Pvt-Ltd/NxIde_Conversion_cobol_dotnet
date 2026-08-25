@@ -1,19 +1,16 @@
 import { Component, ElementRef, HostListener, computed, inject, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter, map, startWith } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
 import { AuthService } from '../core/auth.service';
 import { IconComponent } from '../shared/icon';
-import { resolveBreadcrumb } from './navigation';
 
 /**
  * Top navigation bar.
  *
- * <p>Destinations live in the sidebar, so this bar carries what the sidebar cannot: where the user
- * currently is, a quick jump straight to an account, and the identity menu. On a narrow viewport it
- * also owns the button that opens the sidebar drawer.</p>
+ * <p>Destinations live in the sidebar and each screen names itself in its own header, so this bar
+ * carries only what neither of those does: a quick jump straight to an account, and the identity
+ * menu. On a narrow viewport it also owns the button that opens the sidebar drawer.</p>
  */
 @Component({
   selector: 'cd-navbar',
@@ -29,15 +26,6 @@ import { resolveBreadcrumb } from './navigation';
         >
           <cd-icon name="menu" [size]="20" />
         </button>
-
-        <nav class="cd-breadcrumb" aria-label="Breadcrumb">
-          <span class="cd-breadcrumb__section">{{ crumb().section }}</span>
-          <cd-icon name="chevron" [size]="14" />
-          <span class="cd-breadcrumb__page">{{ crumb().page }}</span>
-          @if (crumb().tran) {
-            <span class="cd-breadcrumb__tran">{{ crumb().tran }}</span>
-          }
-        </nav>
 
         <form class="cd-quickfind" (ngSubmit)="jumpToAccount()">
           <cd-icon name="account" [size]="16" />
@@ -94,16 +82,6 @@ export class NavbarComponent {
 
   readonly open = signal(false);
   accountId = '';
-
-  /** Where the user currently is, recomputed on every completed navigation. */
-  readonly crumb = toSignal(
-    this.router.events.pipe(
-      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-      map((event) => resolveBreadcrumb(event.urlAfterRedirects)),
-      startWith(resolveBreadcrumb(this.router.url)),
-    ),
-    { initialValue: resolveBreadcrumb(this.router.url) },
-  );
 
   readonly initials = computed(() => {
     const user = this.auth.user();

@@ -114,7 +114,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
     </div>
 
     @if (editing()) {
-      <div class="cd-panel" style="max-width: 640px">
+      <div class="cd-panel">
         <div class="cd-panel__head">
           <h2>{{ isNew() ? 'Create transaction type' : 'Update transaction type' }}</h2>
         </div>
@@ -158,7 +158,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
     }
 
     @if (pendingDelete(); as target) {
-      <div class="cd-panel" style="max-width: 640px">
+      <div class="cd-panel">
         <div class="cd-panel__head">
           <h2>Confirm deletion</h2>
         </div>
@@ -176,7 +176,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
     }
 
     @if (pendingCategoryDelete(); as target) {
-      <div class="cd-panel" style="max-width: 640px">
+      <div class="cd-panel">
         <div class="cd-panel__head">
           <h2>Confirm deletion</h2>
         </div>
