@@ -24,9 +24,9 @@ The backend must be running on `http://localhost:8080`. Change
 | Path | Contents |
 |---|---|
 | `src/app/core` | `AuthService` (session signals), `ApiService` (every REST call), JWT interceptor, route guards, transport models |
-| `src/app/layout` | `ShellComponent` — the navigation bar and routed outlet |
-| `src/app/shared` | Screen header, message line, amount pipe |
-| `src/app/features/auth` | Sign on, sign up, change password |
+| `src/app/layout` | `ShellComponent` — the sidebar and routed outlet |
+| `src/app/shared` | Screen header, message line, amount pipe, icon set |
+| `src/app/features/auth` | Sign on, sign up, change password, and the shared brand panel |
 | `src/app/features/menu` | Main and administrator menus |
 | `src/app/features/dashboard` | Portfolio overview |
 | `src/app/features/accounts` | Account view and update |
@@ -36,10 +36,23 @@ The backend must be running on `http://localhost:8080`. Change
 | `src/app/features/reference` | Reference data browser |
 | `src/app/features/admin` | User administration, transaction types, batch console, audit |
 
+## Layout and navigation
+
+Every destination lives in a fixed sidebar, grouped the way the two legacy menus grouped them:
+Overview, Servicing and Reporting for the eleven `COMEN02Y` functions, and an Administration group
+carrying the `COADM02Y` functions plus the batch console. Each entry shows the CICS transaction it
+replaces. The signed-on user and sign-off sit at the foot of the sidebar. Below 900px the sidebar
+becomes an off-canvas drawer opened by the Menu button.
+
+The Administration group is hidden for a regular user, but that is presentation only — the backend
+enforces the role on every administrator endpoint.
+
 ## Conventions
 
 - **Screen header.** `<cd-screen-header>` renders the transaction id, program name, title and the
   COBOL source the screen came from.
+- **Icons.** `<cd-icon name="...">` draws from one set in `shared/icon.ts`; icons inherit the
+  surrounding text colour.
 - **Message line.** `<cd-message>` is the single place a screen shows feedback, matching the BMS
   `ERRMSG` field. Backend messages are shown verbatim so the original wording survives.
 - **Field highlighting.** The backend returns the offending `field` with each validation failure and

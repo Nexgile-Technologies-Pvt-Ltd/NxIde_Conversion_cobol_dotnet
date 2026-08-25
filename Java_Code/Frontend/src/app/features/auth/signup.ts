@@ -4,7 +4,9 @@ import { Router, RouterLink } from '@angular/router';
 
 import { errorField, errorMessage } from '../../core/api.service';
 import { AuthService } from '../../core/auth.service';
+import { IconComponent } from '../../shared/icon';
 import { MessageLineComponent } from '../../shared/message-line';
+import { AuthBrandPanelComponent } from './auth-brand-panel';
 
 /**
  * Self-service registration.
@@ -15,95 +17,106 @@ import { MessageLineComponent } from '../../shared/message-line';
  */
 @Component({
   selector: 'cd-signup',
-  imports: [FormsModule, RouterLink, MessageLineComponent],
+  imports: [FormsModule, RouterLink, IconComponent, MessageLineComponent, AuthBrandPanelComponent],
   template: `
     <div class="cd-auth">
-      <div class="cd-auth__card">
-        <div class="cd-auth__head">
-          <div class="cd-auth__terminal">Create account &middot; Regular user</div>
-          <h1>Sign up</h1>
-          <p>New accounts receive the regular user role.</p>
-        </div>
+      <div class="cd-auth__glow"></div>
+      <cd-auth-brand-panel />
 
-        <form class="cd-auth__body" (ngSubmit)="submit()">
+      <svg class="cd-auth__curve" viewBox="0 0 140 900" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M140 0H70C70 220 0 260 0 450s70 230 70 450h70z" />
+      </svg>
+      <div class="cd-auth__sweep"></div>
+
+      <section class="cd-auth__panel">
+        <form class="cd-auth__card" (ngSubmit)="submit()">
+          <span class="cd-auth__crest"><cd-icon name="emblem" [size]="30" /></span>
+
+          <h2>Create Account</h2>
+          <p class="cd-auth__lead">New accounts receive the regular user role</p>
+          <div class="cd-auth__rule"><span>ROLE U &middot; SELF SERVICE</span></div>
+
           <cd-message [text]="message()" kind="error" />
 
-          <div class="cd-field">
-            <label for="userId">User ID</label>
+          <label class="cd-inputgroup" [class.is-invalid]="field() === 'userId'">
+            <span class="cd-inputgroup__icon"><cd-icon name="user" /></span>
             <input
-              id="userId"
               name="userId"
-              class="cd-mono"
               maxlength="8"
-              [class.cd-invalid]="field() === 'userId'"
+              placeholder="User ID (up to 8 characters)"
+              aria-label="User ID"
               [(ngModel)]="userId"
             />
-            <span class="cd-field__hint">Up to 8 letters or digits</span>
-          </div>
+          </label>
 
-          <div class="cd-grid cd-grid--tight">
-            <div class="cd-field">
-              <label for="firstName">First name</label>
+          <div class="cd-auth__row">
+            <label class="cd-inputgroup" [class.is-invalid]="field() === 'firstName'">
               <input
-                id="firstName"
                 name="firstName"
                 maxlength="20"
-                [class.cd-invalid]="field() === 'firstName'"
+                placeholder="First name"
+                aria-label="First name"
                 [(ngModel)]="firstName"
               />
-            </div>
-            <div class="cd-field">
-              <label for="lastName">Last name</label>
+            </label>
+            <label class="cd-inputgroup" [class.is-invalid]="field() === 'lastName'">
               <input
-                id="lastName"
                 name="lastName"
                 maxlength="20"
-                [class.cd-invalid]="field() === 'lastName'"
+                placeholder="Last name"
+                aria-label="Last name"
                 [(ngModel)]="lastName"
               />
-            </div>
+            </label>
           </div>
 
-          <div class="cd-field">
-            <label for="password">Password</label>
+          <label class="cd-inputgroup" [class.is-invalid]="field() === 'password'">
+            <span class="cd-inputgroup__icon"><cd-icon name="lock" /></span>
             <input
-              id="password"
               name="password"
-              type="password"
-              [class.cd-invalid]="field() === 'password'"
+              [type]="revealed() ? 'text' : 'password'"
+              placeholder="Password"
+              aria-label="Password"
               [(ngModel)]="password"
             />
-            <span class="cd-field__hint">
-              At least {{ minLength() }} characters, with letters and numbers
-            </span>
-          </div>
+            <button
+              type="button"
+              class="cd-inputgroup__reveal"
+              [attr.aria-label]="revealed() ? 'Hide password' : 'Show password'"
+              (click)="revealed.set(!revealed())"
+            >
+              <cd-icon [name]="revealed() ? 'eyeOff' : 'eye'" />
+            </button>
+          </label>
 
-          <div class="cd-field">
-            <label for="confirmPassword">Confirm password</label>
+          <label class="cd-inputgroup" [class.is-invalid]="field() === 'confirmPassword'">
+            <span class="cd-inputgroup__icon"><cd-icon name="lock" /></span>
             <input
-              id="confirmPassword"
               name="confirmPassword"
               type="password"
-              [class.cd-invalid]="field() === 'confirmPassword'"
+              placeholder="Confirm password"
+              aria-label="Confirm password"
               [(ngModel)]="confirmPassword"
             />
-          </div>
+          </label>
 
-          <div class="cd-actions">
-            <button type="submit" class="cd-primary" [disabled]="busy()">
-              @if (busy()) {
-                <span class="cd-spinner"></span>
-              } @else {
-                Create account
-              }
-            </button>
-          </div>
+          <p class="cd-auth__hint">
+            At least {{ minLength() }} characters, with letters and numbers. Stored only as a
+            salted hash.
+          </p>
+
+          <button type="submit" class="cd-auth__submit" [disabled]="busy()">
+            @if (busy()) {
+              <span class="cd-spinner cd-spinner--light"></span>
+            } @else {
+              <span>Create Account</span>
+              <cd-icon name="arrowRight" [size]="19" />
+            }
+          </button>
+
+          <p class="cd-auth__foot">Already registered? <a routerLink="/login">Sign on</a></p>
         </form>
-
-        <div class="cd-auth__foot">
-          Already registered? <a routerLink="/login">Sign on</a>
-        </div>
-      </div>
+      </section>
     </div>
   `,
 })
@@ -118,6 +131,7 @@ export class SignupComponent {
   confirmPassword = '';
 
   readonly busy = signal(false);
+  readonly revealed = signal(false);
   readonly message = signal<string | null>(null);
   readonly field = signal<string | null>(null);
   readonly minLength = signal(8);
