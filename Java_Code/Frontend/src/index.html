@@ -6,6 +6,15 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Java conversion of the AWS Mainframe Modernization CardDemo COBOL application">
+  <!-- The two faces the first paint needs: body text and the headings, labels and buttons
+       that sit at 600. Fetching them alongside the stylesheet rather than after it keeps the
+       sign-on screen from drawing once in the fallback and again in Plex. The rest of the
+       family is requested by the stylesheet as it is needed. -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="fonts/IBMPlexSans-Regular.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="fonts/IBMPlexSans-SemiBold.woff2">
+
   <!-- The mark the sidebar and the sign-on screen carry. The svg is served to anything that
        understands one; the ico holds 16/32/48 for everything else. -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">

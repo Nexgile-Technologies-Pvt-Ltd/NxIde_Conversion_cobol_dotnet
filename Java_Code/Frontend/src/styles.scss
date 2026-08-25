@@ -6,6 +6,52 @@
    renders them as a modern responsive web application.
    ===================================================================================== */
 
+/* -------------------------------------------------------------------------------------
+   IBM Plex Sans, self-hosted. This is the only family the application loads.
+
+   Four upright weights, woff2 only. No italic face is shipped: the two <em> elements in
+   the application both set font-style: normal, so an italic would never be drawn.
+
+   The faces come from the pinned @ibm/plex-sans package and are copied into /fonts by the
+   build, so nothing is fetched from a font CDN at runtime and the application renders the
+   same on a network with no outbound access.
+
+   font-display: swap draws the fallback immediately and repaints once Plex arrives, which
+   keeps the sign-on screen readable on a cold cache rather than blank.
+   ------------------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('/fonts/IBMPlexSans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('/fonts/IBMPlexSans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('/fonts/IBMPlexSans-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  src: url('/fonts/IBMPlexSans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --cd-bg: #eef1f6;
   --cd-surface: #ffffff;
@@ -41,8 +87,9 @@
   --cd-radius: 8px;
   --cd-radius-sm: 5px;
   --cd-shadow: 0 1px 2px rgba(16, 32, 46, 0.06), 0 6px 18px rgba(16, 32, 46, 0.07);
-  --cd-mono: 'Cascadia Mono', 'Consolas', 'SF Mono', 'Menlo', monospace;
-  --cd-sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  /* The single family. The fallbacks behind it only matter if the woff2 fails to load. */
+  --cd-sans: 'IBM Plex Sans', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial,
+    sans-serif;
 }
 
 * {
@@ -204,7 +251,7 @@ h4 {
 }
 
 .cd-sidebar__nav a em {
-  font-family: var(--cd-mono);
+  font-family: var(--cd-sans);
   font-style: normal;
   font-size: 9.5px;
   letter-spacing: 0.06em;
@@ -452,7 +499,7 @@ cd-navbar {
 }
 
 .cd-usermenu__head strong {
-  font-family: var(--cd-mono);
+  font-family: var(--cd-sans);
   font-size: 13px;
   letter-spacing: 0.04em;
 }
@@ -541,7 +588,7 @@ cd-navbar {
 
 /* Sits opposite the title, on the baseline the map header used to keep its stamp on. */
 .cd-screen-header__clock {
-  font-family: var(--cd-mono);
+  font-family: var(--cd-sans);
   font-size: 11.5px;
   color: var(--cd-ink-faint);
   letter-spacing: 0.04em;
@@ -633,9 +680,15 @@ textarea {
   transition: border-color 0.12s, box-shadow 0.12s;
 }
 
+/*
+ * The marker for a technical value: an account or card number, an id, a code. The family is
+ * the same everywhere now, so what makes these line up column to column is tabular figures
+ * rather than a monospaced face.
+ */
 input.cd-mono,
 .cd-mono {
-  font-family: var(--cd-mono);
+  font-family: var(--cd-sans);
+  font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
 }
 
@@ -673,7 +726,7 @@ input.cd-invalid {
 /* ------------------------------------------------------------------ readonly value display */
 
 .cd-value {
-  font-family: var(--cd-mono);
+  font-family: var(--cd-sans);
   font-size: 13.5px;
   background: var(--cd-surface-alt);
   border: 1px solid var(--cd-border);
@@ -770,7 +823,7 @@ button.cd-small {
 }
 
 .cd-pfkeys button {
-  font-family: var(--cd-mono);
+  font-family: var(--cd-sans);
   font-size: 12px;
 }
 
@@ -938,11 +991,12 @@ table.cd-table tbody tr:hover {
 table.cd-table td.cd-num,
 table.cd-table th.cd-num {
   text-align: right;
-  font-family: var(--cd-mono);
+  font-family: var(--cd-sans);
 }
 
 table.cd-table td.cd-mono {
-  font-family: var(--cd-mono);
+  font-family: var(--cd-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 12.5px;
 }
 
@@ -1051,13 +1105,22 @@ table.cd-table td.cd-mono {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--cd-mono);
+  font-family: var(--cd-sans);
   font-weight: 700;
   font-size: 14px;
 }
 
 .cd-menu-card__text {
   min-width: 0;
+  /*
+   * The card is a <button>, so it inherits the nowrap that keeps an ordinary button's label on
+   * one line. Here the label is a title, and the longest of them -- "Transaction Type
+   * Maintenance (Db2)" -- is wider than the column it sits in, so it ran out over the card edge
+   * instead of taking a second line. Wrapping is restored for the card's copy only; every other
+   * button keeps the inherited rule.
+   */
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 /* Both are spans, so they need an explicit block to stack rather than run on one line. */
@@ -1071,7 +1134,7 @@ table.cd-table td.cd-mono {
 
 .cd-menu-card__pgm {
   display: block;
-  font-family: var(--cd-mono);
+  font-family: var(--cd-sans);
   font-size: 11px;
   color: var(--cd-ink-faint);
   margin-top: 3px;
@@ -1104,7 +1167,7 @@ table.cd-table td.cd-mono {
 .cd-stat__value {
   font-size: 24px;
   font-weight: 600;
-  font-family: var(--cd-mono);
+  font-family: var(--cd-sans);
   margin-top: 5px;
   letter-spacing: -0.02em;
 }
@@ -1123,12 +1186,43 @@ table.cd-table td.cd-mono {
  * gone: the art supplies all three. The navy underneath covers the moment before the image
  * decodes and any edge the crop cannot fill.
  */
+
+/* =====================================================================
+   The plate is drawn at a fixed design size and scaled to the window as a
+   whole, rather than reflowed. `--u` is one design pixel: it resolves to 1px
+   in a 1528px-wide window -- the size the design was settled at -- and grows
+   or shrinks from there, taking the width and the height into account so the
+   plate always fits without scrolling.
+
+   Because browser zoom changes the viewport in both axes together, the ratio
+   behind `--u` is unchanged by it: the screen renders identically at 90%, 80%,
+   60% or 33%, only smaller. It is also what lets a television show the design
+   enlarged and whole, instead of the two halves drifting to opposite edges.
+
+   Every length below is therefore written as `calc(N * var(--u))`, where N is
+   the design pixel. Ratios that already scale with their own font size -- em
+   letter-spacing, ch measures, unitless line-heights -- are left alone.
+   ===================================================================== */
+
 .cd-auth {
+  /* 1u = one design pixel. 1528 x 730 is the plate: the width the two columns
+     were drawn at, and the height of the tallest of them -- the create-account
+     card, which needs 706u once its panel padding is counted -- plus headroom. */
+  --u: min(100vw / 1528, 100dvh / 730);
+
   position: relative;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  overflow: hidden;
+  /* The two columns at their design widths, held together and centred, so the
+     space a wide screen adds falls outside the pair rather than between them. */
+  grid-template-columns: calc(817 * var(--u)) calc(711 * var(--u));
+  justify-content: center;
+  align-content: center;
+  /* Nothing overflows at rest, so no scrollbar appears. It is only when a validation notice grows
+     the card on a short window that the plate is outgrown -- and then reaching the sign-on button
+     beats clipping it away. */
+  overflow: auto;
   background-color: var(--cd-navy-900);
   background-image: url('/login-background.jpg');
   background-position: center;
@@ -1156,72 +1250,83 @@ table.cd-table td.cd-mono {
   pointer-events: none;
 }
 
+/* Icons carry their pixel size as an attribute; CSS outranks that, which is
+   what keeps them in step with the type as the plate scales. */
+.cd-auth svg {
+  width: calc(18 * var(--u));
+  height: calc(18 * var(--u));
+}
+
 /* ------------------------------------------------------------------ brand half */
 
 .cd-brand {
   position: relative;
   z-index: 1;
-  padding: 46px 60px 46px 62px;
+  padding: calc(46 * var(--u)) calc(60 * var(--u)) calc(46 * var(--u)) calc(62 * var(--u));
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 30px;
+  gap: calc(30 * var(--u));
   color: #fff;
-  max-width: 960px;
 }
 
 .cd-brand__mark {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: calc(14 * var(--u));
 }
 
 .cd-brand__emblem {
-  width: 52px;
-  height: 52px;
+  width: calc(52 * var(--u));
+  height: calc(52 * var(--u));
   flex-shrink: 0;
-  border-radius: 14px;
+  border-radius: calc(14 * var(--u));
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--cd-navy-900);
   background: linear-gradient(145deg, var(--cd-gold-soft), var(--cd-gold));
-  box-shadow: 0 6px 20px rgba(217, 169, 74, 0.3);
+  box-shadow: 0 calc(6 * var(--u)) calc(20 * var(--u)) rgba(217, 169, 74, 0.3);
+}
+
+.cd-brand__emblem svg {
+  width: calc(26 * var(--u));
+  height: calc(26 * var(--u));
 }
 
 .cd-brand__name {
   display: flex;
   flex-direction: column;
-  font-size: 21px;
+  font-size: calc(21 * var(--u));
   font-weight: 700;
   letter-spacing: 0.14em;
   line-height: 1.1;
 }
 
 .cd-brand__name small {
-  font-size: 11.5px;
+  font-size: calc(11.5 * var(--u));
   font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.62);
-  margin-top: 5px;
+  margin-top: calc(5 * var(--u));
 }
 
 .cd-brand__name em {
   font-style: normal;
-  font-size: 12px;
+  font-size: calc(12 * var(--u));
   font-weight: 600;
   letter-spacing: 0.05em;
   color: var(--cd-gold);
-  margin-top: 4px;
+  margin-top: calc(4 * var(--u));
 }
 
 .cd-brand__headline h1 {
-  font-size: clamp(22px, 2.4vw, 32px);
+  font-size: calc(32 * var(--u));
   font-weight: 700;
   line-height: 1.12;
   letter-spacing: -0.02em;
-  margin-bottom: 16px;
+  margin-bottom: calc(16 * var(--u));
 }
 
 .cd-brand__headline h1 span {
@@ -1232,7 +1337,7 @@ table.cd-table td.cd-mono {
 .cd-brand__headline p {
   margin: 0;
   max-width: 64ch;
-  font-size: 13.5px;
+  font-size: calc(13.5 * var(--u));
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.66);
 }
@@ -1243,18 +1348,18 @@ table.cd-table td.cd-mono {
   padding: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 22px 36px;
+  gap: calc(22 * var(--u)) calc(36 * var(--u));
 }
 
 .cd-brand__features li {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
+  gap: calc(14 * var(--u));
 }
 
 .cd-brand__icon {
-  width: 40px;
-  height: 40px;
+  width: calc(40 * var(--u));
+  height: calc(40 * var(--u));
   flex-shrink: 0;
   border-radius: 50%;
   display: flex;
@@ -1265,16 +1370,21 @@ table.cd-table td.cd-mono {
   background: rgba(217, 169, 74, 0.08);
 }
 
+.cd-brand__icon svg {
+  width: calc(19 * var(--u));
+  height: calc(19 * var(--u));
+}
+
 .cd-brand__features span > strong {
   display: block;
-  font-size: 13.5px;
+  font-size: calc(13.5 * var(--u));
   font-weight: 600;
   color: var(--cd-gold-soft);
-  margin-bottom: 3px;
+  margin-bottom: calc(3 * var(--u));
 }
 
 .cd-brand__features li > span:last-child {
-  font-size: 12.5px;
+  font-size: calc(12.5 * var(--u));
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.6);
   max-width: 34ch;
@@ -1288,45 +1398,50 @@ table.cd-table td.cd-mono {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 34px 44px;
+  padding: calc(34 * var(--u)) calc(44 * var(--u));
 }
 
 .cd-auth__card {
   width: 100%;
-  max-width: 400px;
+  max-width: calc(400 * var(--u));
   background: var(--cd-surface);
-  border-radius: 22px;
-  padding: 34px 34px 30px;
-  box-shadow: 0 28px 70px rgba(4, 16, 34, 0.45);
+  border-radius: calc(22 * var(--u));
+  padding: calc(34 * var(--u)) calc(34 * var(--u)) calc(30 * var(--u));
+  box-shadow: 0 calc(28 * var(--u)) calc(70 * var(--u)) rgba(4, 16, 34, 0.45);
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: calc(13 * var(--u));
   text-align: center;
 }
 
 .cd-auth__crest {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 4px;
+  width: calc(60 * var(--u));
+  height: calc(60 * var(--u));
+  margin: 0 auto calc(4 * var(--u));
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--cd-navy-900);
   background: linear-gradient(145deg, var(--cd-gold-soft), var(--cd-gold));
-  box-shadow: 0 6px 18px rgba(217, 169, 74, 0.34);
+  box-shadow: 0 calc(6 * var(--u)) calc(18 * var(--u)) rgba(217, 169, 74, 0.34);
+}
+
+.cd-auth__crest svg {
+  width: calc(30 * var(--u));
+  height: calc(30 * var(--u));
 }
 
 .cd-auth__card h2 {
-  font-size: 27px;
+  font-size: calc(27 * var(--u));
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--cd-navy-900);
 }
 
 .cd-auth__lead {
-  margin: -6px 0 0;
-  font-size: 13px;
+  margin: calc(-6 * var(--u)) 0 0;
+  font-size: calc(13 * var(--u));
   color: var(--cd-ink-soft);
 }
 
@@ -1334,8 +1449,8 @@ table.cd-table td.cd-mono {
 .cd-auth__rule {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 4px 0 6px;
+  gap: calc(12 * var(--u));
+  margin: calc(4 * var(--u)) 0 calc(6 * var(--u));
   color: var(--cd-ink-faint);
 }
 
@@ -1348,8 +1463,8 @@ table.cd-table td.cd-mono {
 }
 
 .cd-auth__rule span {
-  font-family: var(--cd-mono);
-  font-size: 9.5px;
+  font-family: var(--cd-sans);
+  font-size: calc(9.5 * var(--u));
   letter-spacing: 0.14em;
   white-space: nowrap;
 }
@@ -1357,18 +1472,18 @@ table.cd-table td.cd-mono {
 .cd-auth__row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 11px;
+  gap: calc(11 * var(--u));
 }
 
 /* Input with a leading icon and an optional trailing reveal button. */
 .cd-inputgroup {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 13px;
+  gap: calc(10 * var(--u));
+  padding: 0 calc(13 * var(--u));
   background: var(--cd-surface-alt);
   border: 1px solid var(--cd-border);
-  border-radius: 11px;
+  border-radius: calc(11 * var(--u));
   transition: border-color 0.13s, box-shadow 0.13s, background 0.13s;
   text-align: left;
 }
@@ -1376,17 +1491,18 @@ table.cd-table td.cd-mono {
 .cd-inputgroup:focus-within {
   background: #fff;
   border-color: var(--cd-navy-700);
-  box-shadow: 0 0 0 3px rgba(18, 58, 104, 0.12);
+  box-shadow: 0 0 0 calc(3 * var(--u)) rgba(18, 58, 104, 0.12);
 }
 
 .cd-inputgroup.is-invalid {
   border-color: var(--cd-danger);
-  box-shadow: 0 0 0 3px var(--cd-danger-soft);
+  box-shadow: 0 0 0 calc(3 * var(--u)) var(--cd-danger-soft);
 }
 
 .cd-inputgroup__icon {
   color: var(--cd-ink-faint);
   flex-shrink: 0;
+  display: flex;
 }
 
 .cd-inputgroup:focus-within .cd-inputgroup__icon {
@@ -1398,8 +1514,8 @@ table.cd-table td.cd-mono {
   min-width: 0;
   border: none;
   background: transparent;
-  padding: 12px 0;
-  font-size: 14px;
+  padding: calc(12 * var(--u)) 0;
+  font-size: calc(14 * var(--u));
 }
 
 .cd-inputgroup input:focus {
@@ -1409,10 +1525,11 @@ table.cd-table td.cd-mono {
 
 .cd-inputgroup__reveal {
   flex-shrink: 0;
-  padding: 4px;
+  padding: calc(4 * var(--u));
   border: none;
   background: transparent;
   color: var(--cd-ink-faint);
+  display: flex;
 }
 
 .cd-inputgroup__reveal:hover:not(:disabled) {
@@ -1421,20 +1538,25 @@ table.cd-table td.cd-mono {
 }
 
 .cd-auth__submit {
-  margin-top: 6px;
-  padding: 14px 18px;
+  margin-top: calc(6 * var(--u));
+  padding: calc(14 * var(--u)) calc(18 * var(--u));
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  font-size: 14.5px;
+  gap: calc(10 * var(--u));
+  font-size: calc(14.5 * var(--u));
   font-weight: 600;
   letter-spacing: 0.01em;
   color: #fff;
   border: none;
-  border-radius: 11px;
+  border-radius: calc(11 * var(--u));
   background: linear-gradient(135deg, var(--cd-navy-800), var(--cd-navy-900));
-  box-shadow: 0 8px 20px rgba(10, 30, 58, 0.28);
+  box-shadow: 0 calc(8 * var(--u)) calc(20 * var(--u)) rgba(10, 30, 58, 0.28);
+}
+
+.cd-auth__submit svg {
+  width: calc(19 * var(--u));
+  height: calc(19 * var(--u));
 }
 
 .cd-auth__submit:hover:not(:disabled) {
@@ -1443,15 +1565,15 @@ table.cd-table td.cd-mono {
 
 .cd-auth__hint {
   margin: 0;
-  font-size: 11.5px;
+  font-size: calc(11.5 * var(--u));
   line-height: 1.5;
   color: var(--cd-ink-faint);
   text-align: left;
 }
 
 .cd-auth__foot {
-  margin: 6px 0 0;
-  font-size: 12.5px;
+  margin: calc(6 * var(--u)) 0 0;
+  font-size: calc(12.5 * var(--u));
   color: var(--cd-ink-soft);
 }
 
@@ -1463,6 +1585,9 @@ table.cd-table td.cd-mono {
 .cd-auth__card .cd-message {
   margin-bottom: 0;
   text-align: left;
+  font-size: calc(12.5 * var(--u));
+  padding: calc(9 * var(--u)) calc(12 * var(--u));
+  border-radius: calc(9 * var(--u));
 }
 
 /* ------------------------------------------------------------------ misc */
@@ -1472,8 +1597,14 @@ table.cd-table td.cd-mono {
   color: var(--cd-ink-faint);
 }
 
+/*
+ * Generated 80- and 133-column output. It was authored against a fixed-width device, so with
+ * a proportional family the character grid no longer holds; tabular figures keep the money
+ * columns square, which is the part a reader actually scans.
+ */
 .cd-pre {
-  font-family: var(--cd-mono);
+  font-family: var(--cd-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 12px;
   line-height: 1.45;
   white-space: pre;
@@ -1528,13 +1659,25 @@ table.cd-table td.cd-mono {
 
 /* ------------------------------------------------------------------ responsive */
 
-@media (max-width: 1180px) {
-  /*
-   * One column, so the crop is framed on the clear left of the art instead of its centre, where
-   * the gold sweep would otherwise run straight through the form.
-   */
+/*
+ * Below the design's proportions the two columns cannot both hold their shape -- scaling them
+ * further would only make the type too small to read -- so the plate steps aside: one column, the
+ * copy above the card, and the page allowed to scroll. A short window takes the same treatment,
+ * since the height is what the scale is up against there.
+ */
+@media (max-width: 900px), (max-height: 420px) {
   .cd-auth {
+    /* Read against a 620u-wide plate now, and floored so the type stays legible on a phone. */
+    --u: clamp(0.62px, min(100vw / 620, 100dvh / 980), 1.1px);
+
     grid-template-columns: 1fr;
+    align-content: start;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: auto;
+    /* The crop is framed on the clear left of the art instead of its centre, where the gold
+       sweep would otherwise run straight through the form. */
     background-position: 14% center;
   }
 
@@ -1549,19 +1692,21 @@ table.cd-table td.cd-mono {
   }
 
   .cd-brand {
-    max-width: none;
-    padding: 38px 30px 8px;
-    gap: 22px;
+    padding: calc(38 * var(--u)) calc(30 * var(--u)) calc(8 * var(--u));
+    gap: calc(22 * var(--u));
   }
 
   .cd-brand__features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px 24px;
+    grid-template-columns: repeat(auto-fit, minmax(calc(240 * var(--u)), 1fr));
+    gap: calc(16 * var(--u)) calc(24 * var(--u));
   }
 
   .cd-auth__panel {
-    padding: 24px 24px 40px;
+    padding: calc(24 * var(--u)) calc(24 * var(--u)) calc(40 * var(--u));
+  }
+
+  .cd-auth__card {
+    max-width: calc(430 * var(--u));
   }
 }
 

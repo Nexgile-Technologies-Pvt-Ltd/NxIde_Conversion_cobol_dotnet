@@ -52,6 +52,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "IBMPlexSans-{Regular,Medium,SemiBold,Bold}.woff2",
+                "input": "node_modules/@ibm/plex-sans/fonts/complete/woff2",
+                "output": "fonts"
               }
             ],
             "styles": [
