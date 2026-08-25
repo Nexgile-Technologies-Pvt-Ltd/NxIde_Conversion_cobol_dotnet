@@ -65,10 +65,6 @@ import { NAV_GROUPS } from './navigation';
         <main class="cd-main">
           <router-outlet />
         </main>
-
-        <footer class="cd-footer">
-          Java conversion of the AWS Mainframe Modernization CardDemo COBOL application
-        </footer>
       </div>
     </div>
   `,
