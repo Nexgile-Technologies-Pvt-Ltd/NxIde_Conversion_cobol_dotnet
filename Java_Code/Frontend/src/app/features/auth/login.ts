@@ -82,13 +82,6 @@ import { AuthBrandPanelComponent } from './auth-brand-panel';
             }
           </button>
 
-          @if (demoFilled) {
-            <p class="cd-auth__demo">
-              Demonstration credentials for
-              <strong>{{ userId }}</strong> are pre-filled
-            </p>
-          }
-
           @if (signupEnabled()) {
             <p class="cd-auth__foot">
               Don't have an account? <a routerLink="/signup">Create Account</a>
@@ -111,7 +104,10 @@ export class LoginComponent {
   userId = environment.demoCredentials?.userId ?? '';
   password = environment.demoCredentials?.password ?? '';
 
-  /** Whether the fields arrived pre-filled, so the screen can say why. */
+  /**
+   * Whether the fields arrived pre-filled. Browser autofill is suppressed while they are, so a
+   * saved credential cannot overwrite them.
+   */
   readonly demoFilled = environment.demoCredentials !== null;
 
   readonly busy = signal(false);

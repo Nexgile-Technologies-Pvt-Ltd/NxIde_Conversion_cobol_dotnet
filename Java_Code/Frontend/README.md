@@ -23,8 +23,8 @@ The backend must be running on `http://localhost:8080`. Change
 ### Demonstration credentials
 
 The sign-on screen arrives pre-filled with `demoCredentials` from the active environment file,
-currently the fixture administrator `ADMIN001`, and says so on the card. Browser autofill is
-suppressed while they are in place so a saved credential cannot overwrite them.
+currently the fixture administrator `ADMIN001`. Browser autofill is suppressed while they are in
+place so a saved credential cannot overwrite them.
 
 **Set `demoCredentials` to `null` in both environment files before this application carries
 anything real.** The value is compiled into the browser bundle and is readable by anyone who loads
