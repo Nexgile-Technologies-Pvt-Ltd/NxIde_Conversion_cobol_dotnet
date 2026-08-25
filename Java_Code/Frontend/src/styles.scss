@@ -1413,6 +1413,23 @@ table.cd-table td.cd-mono {
   text-align: left;
 }
 
+/* Says why the fields arrived populated, so a filled password box is not a puzzle. */
+.cd-auth__demo {
+  margin: 2px 0 0;
+  padding: 8px 12px;
+  border-radius: var(--cd-radius-sm);
+  background: var(--cd-warn-soft);
+  border: 1px solid #f0d9a8;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--cd-warn);
+}
+
+.cd-auth__demo strong {
+  font-family: var(--cd-mono);
+  font-weight: 700;
+}
+
 .cd-auth__foot {
   margin: 6px 0 0;
   font-size: 12.5px;

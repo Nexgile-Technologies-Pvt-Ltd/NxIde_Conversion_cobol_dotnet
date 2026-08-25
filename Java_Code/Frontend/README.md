@@ -17,7 +17,18 @@ npm run build:prod           # dist/carddemo-frontend
 
 The backend must be running on `http://localhost:8080`. Change
 `src/environments/environment.ts` if it listens elsewhere; the production build swaps in
-`environment.prod.ts`, which uses a same-origin `/api` base.
+`environment.prod.ts`, which uses a same-origin `/api` base. Both files share the shape in
+`environment.model.ts` so they cannot drift apart.
+
+### Demonstration credentials
+
+The sign-on screen arrives pre-filled with `demoCredentials` from the active environment file,
+currently the fixture administrator `ADMIN001`, and says so on the card. Browser autofill is
+suppressed while they are in place so a saved credential cannot overwrite them.
+
+**Set `demoCredentials` to `null` in both environment files before this application carries
+anything real.** The value is compiled into the browser bundle and is readable by anyone who loads
+the page, so it is only ever appropriate for the shipped fixture accounts.
 
 ## Layout
 

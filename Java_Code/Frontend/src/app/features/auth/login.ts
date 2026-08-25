@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { environment } from '../../../environments/environment';
 import { errorField, errorMessage } from '../../core/api.service';
 import { AuthService } from '../../core/auth.service';
 import { IconComponent } from '../../shared/icon';
@@ -45,7 +46,7 @@ import { AuthBrandPanelComponent } from './auth-brand-panel';
             <input
               name="userId"
               maxlength="8"
-              autocomplete="username"
+              [attr.autocomplete]="demoFilled ? 'off' : 'username'"
               placeholder="User ID"
               aria-label="User ID"
               [(ngModel)]="userId"
@@ -57,7 +58,7 @@ import { AuthBrandPanelComponent } from './auth-brand-panel';
             <input
               name="password"
               [type]="revealed() ? 'text' : 'password'"
-              autocomplete="current-password"
+              [attr.autocomplete]="demoFilled ? 'off' : 'current-password'"
               placeholder="Password"
               aria-label="Password"
               [(ngModel)]="password"
@@ -81,6 +82,13 @@ import { AuthBrandPanelComponent } from './auth-brand-panel';
             }
           </button>
 
+          @if (demoFilled) {
+            <p class="cd-auth__demo">
+              Demonstration credentials for
+              <strong>{{ userId }}</strong> are pre-filled
+            </p>
+          }
+
           @if (signupEnabled()) {
             <p class="cd-auth__foot">
               Don't have an account? <a routerLink="/signup">Create Account</a>
@@ -96,8 +104,15 @@ export class LoginComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  userId = '';
-  password = '';
+  /**
+   * Pre-filled from the configured demonstration credentials so the fixture data is reachable
+   * without typing them each time. Blank whenever none are configured.
+   */
+  userId = environment.demoCredentials?.userId ?? '';
+  password = environment.demoCredentials?.password ?? '';
+
+  /** Whether the fields arrived pre-filled, so the screen can say why. */
+  readonly demoFilled = environment.demoCredentials !== null;
 
   readonly busy = signal(false);
   readonly revealed = signal(false);
