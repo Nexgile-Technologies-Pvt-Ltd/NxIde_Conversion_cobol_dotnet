@@ -398,8 +398,13 @@ export interface DashboardSummary {
   customerCount: number;
   cardCount: number;
   transactionCount: number;
-  userCount: number;
-  pendingDailyTransactions: number;
+  /**
+   * Security-file and batch figures. Omitted from the payload for a regular user, who can reach
+   * neither the user list nor the batch console; the backend serialises with non-null inclusion,
+   * so these arrive absent rather than null.
+   */
+  userCount?: number;
+  pendingDailyTransactions?: number;
   totalBalance: number;
   totalCreditLimit: number;
   recentBatchRuns: BatchRunDto[];

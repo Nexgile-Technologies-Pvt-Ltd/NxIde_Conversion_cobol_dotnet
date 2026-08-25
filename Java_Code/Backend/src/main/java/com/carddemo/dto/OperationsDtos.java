@@ -113,13 +113,22 @@ public final class OperationsDtos {
     }
 
     /** Dashboard aggregates, all computed from PostgreSQL. */
+    /**
+     * Landing dashboard aggregates.
+     *
+     * <p>The portfolio figures are the whole servicing estate, which every signed-on user works:
+     * CardDemo has no per-user partition of accounts. The operator-console figures are a different
+     * matter. {@code userCount}, {@code pendingDailyTransactions} and {@code recentBatchRuns}
+     * describe the security file and the batch estate, which a regular user cannot reach, so they
+     * are {@code null} for that role and the cards are left off the screen entirely.</p>
+     */
     public record DashboardSummary(
             long accountCount,
             long customerCount,
             long cardCount,
             long transactionCount,
-            long userCount,
-            long pendingDailyTransactions,
+            Long userCount,
+            Long pendingDailyTransactions,
             BigDecimal totalBalance,
             BigDecimal totalCreditLimit,
             List<BatchRunDto> recentBatchRuns,

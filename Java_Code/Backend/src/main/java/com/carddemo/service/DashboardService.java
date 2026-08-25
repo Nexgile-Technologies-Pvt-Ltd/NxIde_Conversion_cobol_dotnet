@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,8 +49,14 @@ public class DashboardService {
         this.batchRuns = batchRuns;
     }
 
+    /**
+     * @param admin whether the caller holds the administrator role. The portfolio figures are the
+     *              same for both roles because the servicing estate is shared, but the security
+     *              file and batch counters are withheld from a regular user, who has no route to
+     *              either the user list or the batch console.
+     */
     @Transactional(readOnly = true)
-    public DashboardSummary summary() {
+    public DashboardSummary summary(boolean admin) {
         BigDecimal totalBalance = accounts.sumCurrentBalance();
         BigDecimal totalCreditLimit = accounts.findAllByOrderByAccountIdAsc().stream()
                 .map(a -> a.getCreditLimit())
@@ -73,11 +80,11 @@ public class DashboardService {
                 customers.count(),
                 cards.count(),
                 transactions.count(),
-                users.count(),
-                dailyTransactions.countByProcessedFalse(),
+                admin ? users.count() : null,
+                admin ? dailyTransactions.countByProcessedFalse() : null,
                 totalBalance == null ? BigDecimal.ZERO : totalBalance,
                 totalCreditLimit,
-                batchRuns.history(5),
+                admin ? batchRuns.history(5) : List.of(),
                 transactionService.recent(8),
                 byType);
     }

@@ -47,7 +47,11 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
           <div class="cd-stat__label">Transactions</div>
           <div class="cd-stat__value">{{ summary.transactionCount | number }}</div>
           <div class="cd-stat__sub">
-            {{ summary.pendingDailyTransactions | number }} daily records awaiting posting
+            @if (summary.pendingDailyTransactions != null) {
+              {{ summary.pendingDailyTransactions | number }} daily records awaiting posting
+            } @else {
+              posted to the transaction master
+            }
           </div>
         </div>
         <div class="cd-stat">
@@ -55,11 +59,13 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
           <div class="cd-stat__value">{{ summary.totalBalance | cdAmount }}</div>
           <div class="cd-stat__sub">limit {{ summary.totalCreditLimit | cdAmount }}</div>
         </div>
-        <div class="cd-stat">
-          <div class="cd-stat__label">Security users</div>
-          <div class="cd-stat__value">{{ summary.userCount | number }}</div>
-          <div class="cd-stat__sub">administrators and regular users</div>
-        </div>
+        @if (summary.userCount != null) {
+          <div class="cd-stat">
+            <div class="cd-stat__label">Security users</div>
+            <div class="cd-stat__value">{{ summary.userCount | number }}</div>
+            <div class="cd-stat__sub">administrators and regular users</div>
+          </div>
+        }
       </div>
 
       <div class="cd-grid cd-grid--2">
@@ -135,6 +141,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
         </div>
       </div>
 
+      @if (summary.recentBatchRuns.length) {
       <div class="cd-panel">
         <div class="cd-panel__head">
           <h2>Recent batch runs</h2>
@@ -173,16 +180,13 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
                     <td class="cd-num">{{ run.recordsRejected | number }}</td>
                     <td>{{ run.startedAt | date: 'yyyy-MM-dd HH:mm' }}</td>
                   </tr>
-                } @empty {
-                  <tr>
-                    <td colspan="7" class="cd-empty">No batch job has been run yet.</td>
-                  </tr>
                 }
               </tbody>
             </table>
           </div>
         </div>
       </div>
+      }
     } @else if (!message()) {
       <div class="cd-panel">
         <div class="cd-empty"><span class="cd-spinner"></span> Loading portfolio ...</div>

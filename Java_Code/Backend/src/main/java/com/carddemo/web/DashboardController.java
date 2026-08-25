@@ -29,9 +29,9 @@ public class DashboardController {
     }
 
     @GetMapping("/dashboard")
-    @Operation(summary = "Counts and totals computed from PostgreSQL")
+    @Operation(summary = "Counts and totals computed from PostgreSQL; console figures are admin only")
     public DashboardSummary dashboard() {
-        return dashboardService.summary();
+        return dashboardService.summary(CurrentUser.isAdmin());
     }
 
     @GetMapping("/admin/audit")
