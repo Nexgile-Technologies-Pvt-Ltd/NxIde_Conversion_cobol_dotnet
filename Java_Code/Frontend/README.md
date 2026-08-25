@@ -24,7 +24,7 @@ The backend must be running on `http://localhost:8080`. Change
 | Path | Contents |
 |---|---|
 | `src/app/core` | `AuthService` (session signals), `ApiService` (every REST call), JWT interceptor, route guards, transport models |
-| `src/app/layout` | `ShellComponent` — the sidebar and routed outlet |
+| `src/app/layout` | `ShellComponent` (sidebar plus routed outlet), `NavbarComponent`, and the shared navigation model |
 | `src/app/shared` | Screen header, message line, amount pipe, icon set |
 | `src/app/features/auth` | Sign on, sign up, change password, and the shared brand panel |
 | `src/app/features/menu` | Main and administrator menus |
@@ -38,11 +38,21 @@ The backend must be running on `http://localhost:8080`. Change
 
 ## Layout and navigation
 
-Every destination lives in a fixed sidebar, grouped the way the two legacy menus grouped them:
-Overview, Servicing and Reporting for the eleven `COMEN02Y` functions, and an Administration group
-carrying the `COADM02Y` functions plus the batch console. Each entry shows the CICS transaction it
-replaces. The signed-on user and sign-off sit at the foot of the sidebar. Below 900px the sidebar
-becomes an off-canvas drawer opened by the Menu button.
+The shell pairs a sidebar with a navbar, which carry different things rather than repeating each
+other.
+
+**Sidebar — where you can go.** Every destination, grouped the way the two legacy menus grouped
+them: Overview, Servicing and Reporting for the eleven `COMEN02Y` functions, and an Administration
+group carrying the `COADM02Y` functions plus the batch console. Each entry shows the CICS
+transaction it replaces. Below 900px it becomes an off-canvas drawer opened from the navbar.
+
+**Navbar — where you are, and who you are.** A breadcrumb naming the current section, screen and
+transaction; a quick lookup that jumps straight to an account view; and the identity menu carrying
+change-password and sign-off. It also owns the drawer button on a narrow viewport.
+
+Both the sidebar groups and the breadcrumb table live in `layout/navigation.ts`, so a new screen is
+registered once. `resolveBreadcrumb` matches by longest route prefix, so a route carrying a record
+key such as `/cards/view/0500024453765740` still resolves to its screen.
 
 The Administration group is hidden for a regular user, but that is presentation only — the backend
 enforces the role on every administrator endpoint.

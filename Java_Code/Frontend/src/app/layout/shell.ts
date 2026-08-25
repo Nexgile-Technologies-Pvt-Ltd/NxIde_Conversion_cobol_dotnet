@@ -4,33 +4,20 @@ import { filter } from 'rxjs';
 
 import { AuthService } from '../core/auth.service';
 import { IconComponent } from '../shared/icon';
-
-/** One entry in the sidebar. */
-interface NavItem {
-  label: string;
-  route: string;
-  icon: string;
-  /** CICS transaction the screen replaces, shown as a hint. */
-  tran?: string;
-}
-
-/** A labelled group of sidebar entries. */
-interface NavGroup {
-  label: string;
-  admin: boolean;
-  items: NavItem[];
-}
+import { NavbarComponent } from './navbar';
+import { NAV_GROUPS } from './navigation';
 
 /**
- * Application shell: a fixed sidebar plus the routed screen.
+ * Application shell: a sidebar of destinations, a navbar of context and identity, and the routed
+ * screen between them.
  *
- * The sidebar carries every destination, grouped the way the two legacy menus grouped them: the
- * regular-user functions of {@code COMEN02Y} and, for an administrator, the security and
- * reference functions of {@code COADM02Y} together with the batch console.
+ * <p>The two are complementary rather than duplicated. Everywhere the user can go lives in the
+ * sidebar, grouped the way the two legacy menus grouped it; where the user currently is, the quick
+ * account lookup and the identity menu live in the navbar.</p>
  */
 @Component({
   selector: 'cd-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, IconComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, IconComponent, NavbarComponent],
   template: `
     <div class="cd-app" [class.is-menu-open]="menuOpen()">
       <div class="cd-app__scrim" (click)="menuOpen.set(false)"></div>
@@ -66,38 +53,21 @@ interface NavGroup {
           }
         </nav>
 
-        <div class="cd-sidebar__user">
-          <a class="cd-sidebar__profile" routerLink="/change-password" title="Change password">
-            <span class="cd-sidebar__avatar">{{ initials() }}</span>
-            <span class="cd-sidebar__profiletext">
-              {{ auth.displayName() }}
-              <small>{{ auth.isAdmin() ? 'Administrator' : 'Regular user' }}</small>
-            </span>
-          </a>
-          <button type="button" class="cd-sidebar__signoff" (click)="signOff()" title="Sign off">
-            <cd-icon name="logout" />
-          </button>
-        </div>
+        <p class="cd-sidebar__foot">
+          Angular &rarr; Spring Boot &rarr; PostgreSQL
+          <small>Converted from the CardDemo COBOL estate</small>
+        </p>
       </aside>
 
       <div class="cd-content">
-        <button
-          type="button"
-          class="cd-menutoggle"
-          aria-label="Toggle navigation"
-          (click)="menuOpen.set(!menuOpen())"
-        >
-          <cd-icon name="menu" [size]="20" />
-          <span>Menu</span>
-        </button>
+        <cd-navbar (toggleMenu)="menuOpen.set(!menuOpen())" />
 
         <main class="cd-main">
           <router-outlet />
         </main>
 
         <footer class="cd-footer">
-          Java conversion of the AWS Mainframe Modernization CardDemo COBOL application &middot;
-          Angular &rarr; Spring Boot &rarr; PostgreSQL
+          Java conversion of the AWS Mainframe Modernization CardDemo COBOL application
         </footer>
       </div>
     </div>
@@ -109,72 +79,15 @@ export class ShellComponent {
 
   readonly menuOpen = signal(false);
 
-  private readonly groups: NavGroup[] = [
-    {
-      label: 'Overview',
-      admin: false,
-      items: [
-        { label: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
-        { label: 'Menu', route: '/main-menu', icon: 'menu', tran: 'CM00' },
-      ],
-    },
-    {
-      label: 'Servicing',
-      admin: false,
-      items: [
-        { label: 'Accounts', route: '/accounts/view', icon: 'account', tran: 'CAVW' },
-        { label: 'Cards', route: '/cards', icon: 'card', tran: 'CCLI' },
-        { label: 'Transactions', route: '/transactions', icon: 'transactions', tran: 'CT00' },
-        { label: 'Bill payment', route: '/bill-payment', icon: 'billPayment', tran: 'CB00' },
-      ],
-    },
-    {
-      label: 'Reporting',
-      admin: false,
-      items: [
-        { label: 'Reports', route: '/reports', icon: 'reports', tran: 'CR00' },
-        { label: 'Statements', route: '/statements', icon: 'statements' },
-        { label: 'Reference data', route: '/reference', icon: 'reference' },
-      ],
-    },
-    {
-      label: 'Administration',
-      admin: true,
-      items: [
-        { label: 'Security users', route: '/admin/users', icon: 'users', tran: 'CU00' },
-        { label: 'Transaction types', route: '/admin/transaction-types', icon: 'tag', tran: 'CTLI' },
-        { label: 'Batch operations', route: '/admin/batch', icon: 'batch' },
-        { label: 'Audit trail', route: '/admin/audit', icon: 'audit' },
-      ],
-    },
-  ];
-
   /** Administrator groups are hidden for a regular user; the backend enforces the same rule. */
   readonly visibleGroups = computed(() =>
-    this.groups.filter((group) => !group.admin || this.auth.isAdmin()),
+    NAV_GROUPS.filter((group) => !group.admin || this.auth.isAdmin()),
   );
-
-  readonly initials = computed(() => {
-    const user = this.auth.user();
-    if (!user) {
-      return '--';
-    }
-    const first = (user.firstName ?? '').trim().charAt(0);
-    const last = (user.lastName ?? '').trim().charAt(0);
-    const initials = `${first}${last}`.trim();
-    return (initials.length > 0 ? initials : user.userId.slice(0, 2)).toUpperCase();
-  });
 
   constructor() {
     // Close the mobile drawer whenever a navigation completes.
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => this.menuOpen.set(false));
-  }
-
-  /** Sign off, the web equivalent of F3 from the sign-on screen. */
-  signOff(): void {
-    this.auth.logout(false);
-    void this.router.navigate(['/login'], { queryParams: { signedOff: '1' } });
   }
 }
