@@ -6,6 +6,7 @@ import { ApiService, errorField, errorMessage } from '../../core/api.service';
 import { PageResult, TransactionCategoryDto, TransactionTypeDto } from '../../core/models';
 import { MessageLineComponent } from '../../shared/message-line';
 import { ScreenHeaderComponent } from '../../shared/screen-header';
+import { DialogComponent } from '../../shared/dialog';
 
 /**
  * Transaction type list and maintenance, the optional Db2 module. COBOL programs
@@ -17,7 +18,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
  */
 @Component({
   selector: 'cd-transaction-type-admin',
-  imports: [FormsModule, RouterLink, MessageLineComponent, ScreenHeaderComponent],
+  imports: [FormsModule, RouterLink, MessageLineComponent, ScreenHeaderComponent, DialogComponent],
   template: `
     <cd-screen-header
       title="Transaction type maintenance"
@@ -158,42 +159,32 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
     }
 
     @if (pendingDelete(); as target) {
-      <div class="cd-panel">
-        <div class="cd-panel__head">
-          <h2>Confirm deletion</h2>
+      <cd-dialog heading="Confirm deletion" (closed)="pendingDelete.set(null)">
+        <p>
+          Delete transaction type <strong class="cd-mono">{{ target.typeCode }}</strong>
+          ({{ target.description }})?
+        </p>
+        <div class="cd-actions" style="margin-top: 14px">
+          <button type="button" class="cd-danger" (click)="doDelete(target)">Yes, delete</button>
+          <button type="button" (click)="pendingDelete.set(null)">Cancel</button>
         </div>
-        <div class="cd-panel__body">
-          <p>
-            Delete transaction type <strong class="cd-mono">{{ target.typeCode }}</strong>
-            ({{ target.description }})?
-          </p>
-          <div class="cd-actions" style="margin-top: 14px">
-            <button type="button" class="cd-danger" (click)="doDelete(target)">Yes, delete</button>
-            <button type="button" (click)="pendingDelete.set(null)">Cancel</button>
-          </div>
-        </div>
-      </div>
+      </cd-dialog>
     }
 
     @if (pendingCategoryDelete(); as target) {
-      <div class="cd-panel">
-        <div class="cd-panel__head">
-          <h2>Confirm deletion</h2>
+      <cd-dialog heading="Confirm deletion" (closed)="pendingCategoryDelete.set(null)">
+        <p>
+          Delete category
+          <strong class="cd-mono">{{ target.typeCode }}/{{ target.categoryCode }}</strong>
+          ({{ target.description }})?
+        </p>
+        <div class="cd-actions" style="margin-top: 14px">
+          <button type="button" class="cd-danger" (click)="doDeleteCategory(target)">
+            Yes, delete
+          </button>
+          <button type="button" (click)="pendingCategoryDelete.set(null)">Cancel</button>
         </div>
-        <div class="cd-panel__body">
-          <p>
-            Delete category
-            <strong class="cd-mono">{{ target.typeCode }}/{{ target.categoryCode }}</strong>
-            ({{ target.description }})?
-          </p>
-          <div class="cd-actions" style="margin-top: 14px">
-            <button type="button" class="cd-danger" (click)="doDeleteCategory(target)">
-              Yes, delete
-            </button>
-            <button type="button" (click)="pendingCategoryDelete.set(null)">Cancel</button>
-          </div>
-        </div>
-      </div>
+      </cd-dialog>
     }
 
     @if (categories().length) {

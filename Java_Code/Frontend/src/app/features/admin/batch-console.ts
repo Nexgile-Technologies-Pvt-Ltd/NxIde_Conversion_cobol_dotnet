@@ -6,6 +6,7 @@ import { ApiService, errorField, errorMessage } from '../../core/api.service';
 import { BatchRejectDto, BatchRunDto, MigrationLogDto } from '../../core/models';
 import { MessageLineComponent } from '../../shared/message-line';
 import { ScreenHeaderComponent } from '../../shared/screen-header';
+import { DialogComponent } from '../../shared/dialog';
 
 /**
  * Batch operations console. Each button is one legacy job:
@@ -17,7 +18,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
  */
 @Component({
   selector: 'cd-batch-console',
-  imports: [DatePipe, DecimalPipe, FormsModule, MessageLineComponent, ScreenHeaderComponent],
+  imports: [DatePipe, DecimalPipe, FormsModule, MessageLineComponent, ScreenHeaderComponent, DialogComponent],
   template: `
     <cd-screen-header
       title="Batch operations"
@@ -166,13 +167,8 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
     </div>
 
     @if (rejects().length) {
-      <div class="cd-panel">
-        <div class="cd-panel__head">
-          <h2>Rejected records &middot; run {{ rejectRunId() }}</h2>
-          <button type="button" class="cd-small" (click)="rejects.set([])">Close</button>
-        </div>
-        <div class="cd-panel__body cd-panel__body--flush">
-          <div class="cd-table-wrap">
+      <cd-dialog heading="Rejected records &middot; run {{ rejectRunId() }}" (closed)="rejects.set([])">
+        <div class="cd-table-wrap">
             <table class="cd-table">
               <thead>
                 <tr>
@@ -194,8 +190,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
               </tbody>
             </table>
           </div>
-        </div>
-      </div>
+      </cd-dialog>
     }
 
     <div class="cd-panel">

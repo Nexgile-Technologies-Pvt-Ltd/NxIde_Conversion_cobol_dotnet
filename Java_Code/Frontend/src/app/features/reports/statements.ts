@@ -7,6 +7,7 @@ import { StatementDto } from '../../core/models';
 import { AmountPipe } from '../../shared/amount.pipe';
 import { MessageLineComponent } from '../../shared/message-line';
 import { ScreenHeaderComponent } from '../../shared/screen-header';
+import { DialogComponent } from '../../shared/dialog';
 
 /**
  * Generated card statements. COBOL program {@code CBSTM03A}, job {@code CREASTMT}.
@@ -16,7 +17,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
  */
 @Component({
   selector: 'cd-statements',
-  imports: [DatePipe, RouterLink, AmountPipe, MessageLineComponent, ScreenHeaderComponent],
+  imports: [DatePipe, RouterLink, AmountPipe, MessageLineComponent, ScreenHeaderComponent, DialogComponent],
   template: `
     <cd-screen-header
       title="Card statements"
@@ -80,27 +81,15 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
     </div>
 
     @if (textContent(); as text) {
-      <div class="cd-panel">
-        <div class="cd-panel__head">
-          <h2>Statement text</h2>
-          <button type="button" class="cd-small" (click)="textContent.set(null)">Close</button>
-        </div>
-        <div class="cd-panel__body">
-          <div class="cd-pre">{{ text }}</div>
-        </div>
-      </div>
+      <cd-dialog heading="Statement text" (closed)="textContent.set(null)">
+        <div class="cd-pre">{{ text }}</div>
+      </cd-dialog>
     }
 
     @if (htmlContent(); as html) {
-      <div class="cd-panel">
-        <div class="cd-panel__head">
-          <h2>Statement HTML source</h2>
-          <button type="button" class="cd-small" (click)="htmlContent.set(null)">Close</button>
-        </div>
-        <div class="cd-panel__body">
-          <div class="cd-pre">{{ html }}</div>
-        </div>
-      </div>
+      <cd-dialog heading="Statement HTML source" (closed)="htmlContent.set(null)">
+        <div class="cd-pre">{{ html }}</div>
+      </cd-dialog>
     }
   `,
 })

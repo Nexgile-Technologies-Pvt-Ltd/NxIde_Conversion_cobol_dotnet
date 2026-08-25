@@ -7,6 +7,7 @@ import { AuthService } from '../../core/auth.service';
 import { PageResult, UserRow } from '../../core/models';
 import { MessageLineComponent } from '../../shared/message-line';
 import { ScreenHeaderComponent } from '../../shared/screen-header';
+import { DialogComponent } from '../../shared/dialog';
 
 /**
  * Security user list. COBOL program {@code COUSR00C}, map {@code COUSR00 / COUSR0A}, transaction
@@ -17,7 +18,7 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
  */
 @Component({
   selector: 'cd-user-list',
-  imports: [FormsModule, RouterLink, MessageLineComponent, ScreenHeaderComponent],
+  imports: [FormsModule, RouterLink, MessageLineComponent, ScreenHeaderComponent, DialogComponent],
   template: `
     <cd-screen-header
       title="Security users"
@@ -129,21 +130,16 @@ import { ScreenHeaderComponent } from '../../shared/screen-header';
     </div>
 
     @if (pendingDelete(); as target) {
-      <div class="cd-panel">
-        <div class="cd-panel__head">
-          <h2>Confirm deletion</h2>
+      <cd-dialog heading="Confirm deletion" (closed)="pendingDelete.set(null)">
+        <p>
+          Delete user <strong class="cd-mono">{{ target.userId }}</strong>
+          ({{ target.firstName }} {{ target.lastName }})? This cannot be undone.
+        </p>
+        <div class="cd-actions" style="margin-top: 14px">
+          <button type="button" class="cd-danger" (click)="doDelete(target)">Yes, delete</button>
+          <button type="button" (click)="pendingDelete.set(null)">Cancel</button>
         </div>
-        <div class="cd-panel__body">
-          <p>
-            Delete user <strong class="cd-mono">{{ target.userId }}</strong>
-            ({{ target.firstName }} {{ target.lastName }})? This cannot be undone.
-          </p>
-          <div class="cd-actions" style="margin-top: 14px">
-            <button type="button" class="cd-danger" (click)="doDelete(target)">Yes, delete</button>
-            <button type="button" (click)="pendingDelete.set(null)">Cancel</button>
-          </div>
-        </div>
-      </div>
+      </cd-dialog>
     }
   `,
 })
