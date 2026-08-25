@@ -116,9 +116,6 @@ export class LoginComponent {
     if (params.get('expired')) {
       this.messageKind.set('info');
       this.message.set('Your session has ended. Please sign on again ...');
-    } else if (params.get('signedOff')) {
-      this.messageKind.set('ok');
-      this.message.set('Thank you for using CardDemo application...');
     }
 
     this.auth.config().subscribe({

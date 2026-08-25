@@ -133,7 +133,7 @@ export class NavbarComponent {
   signOff(): void {
     this.open.set(false);
     this.auth.logout(false);
-    void this.router.navigate(['/login'], { queryParams: { signedOff: '1' } });
+    void this.router.navigate(['/login']);
   }
 
   @HostListener('document:click', ['$event'])
