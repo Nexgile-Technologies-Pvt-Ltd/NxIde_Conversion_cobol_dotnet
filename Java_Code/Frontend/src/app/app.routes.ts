@@ -239,12 +239,28 @@ export const routes: Routes = [
         loadComponent: () => import('./features/admin/audit').then((m) => m.AuditComponent),
       },
 
-      // Optional module that the source reports as not installed.
+      // CPVS pending authorization summary, CPVD authorization detail and fraud marking
       {
         path: 'pending-authorizations',
         title: 'Pending authorizations - CardDemo',
         loadComponent: () =>
-          import('./features/not-available/not-available').then((m) => m.NotAvailableComponent),
+          import('./features/pending-auth/pending-auth-list').then((m) => m.PendingAuthListComponent),
+      },
+      {
+        path: 'pending-authorizations/view',
+        title: 'Authorization details - CardDemo',
+        loadComponent: () =>
+          import('./features/pending-auth/pending-auth-detail').then(
+            (m) => m.PendingAuthDetailComponent,
+          ),
+      },
+      {
+        path: 'pending-authorizations/view/:authKey',
+        title: 'Authorization details - CardDemo',
+        loadComponent: () =>
+          import('./features/pending-auth/pending-auth-detail').then(
+            (m) => m.PendingAuthDetailComponent,
+          ),
       },
     ],
   },

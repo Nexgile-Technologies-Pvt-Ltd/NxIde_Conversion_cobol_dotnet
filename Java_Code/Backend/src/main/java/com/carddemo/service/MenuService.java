@@ -15,9 +15,12 @@ import java.util.List;
  * <p>The option numbers, texts and target program names below are exactly the copybook values.
  * Each entry also carries the Angular route that replaced the CICS {@code XCTL}.</p>
  *
- * <p>Option 11 (pending authorization) and admin options 5-6 (transaction type Db2 module) are
- * optional modules. The legacy programs reported "not installed" for them; the {@code installed}
- * flag reproduces that navigation result instead of failing (FR-OPT-017).</p>
+ * <p>Admin options 5-6 (transaction type Db2 module) belong to an optional module. The legacy
+ * programs reported "not installed" for an absent one; the {@code installed} flag reproduces that
+ * navigation result instead of failing (FR-OPT-017).</p>
+ *
+ * <p>Option 11 was reported the same way until the authorization module was converted. It is now
+ * installed and reaches the pending authorization screens ({@code COPAUS0C} / {@code COPAUS1C}).</p>
  */
 @Service
 public class MenuService {
@@ -36,7 +39,7 @@ public class MenuService {
             new MenuOption(8, "Transaction Add", "COTRN02C", "U", "/transactions/add", true),
             new MenuOption(9, "Transaction Reports", "CORPT00C", "U", "/reports", true),
             new MenuOption(10, "Bill Payment", "COBIL00C", "U", "/bill-payment", true),
-            new MenuOption(11, "Pending Authorization View", "COPAUS0C", "U", "/pending-authorizations", false));
+            new MenuOption(11, "Pending Authorization View", "COPAUS0C", "U", "/pending-authorizations", true));
 
     /** {@code COADM02Y.cpy} lines 19-59: the six administrator menu entries. */
     private static final List<MenuOption> ADMIN_MENU = List.of(

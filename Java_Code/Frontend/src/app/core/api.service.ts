@@ -17,9 +17,14 @@ import {
   CategoryBalanceDto,
   DashboardSummary,
   DisclosureGroupDto,
+  FraudMarkRequest,
+  FraudMarkResult,
   MenuView,
   MigrationLogDto,
   PageResult,
+  PendingAuthDetailView,
+  PendingAuthRow,
+  PendingAuthSummaryView,
   ReportRequestDto,
   ReportRequestInput,
   StatementDto,
@@ -181,6 +186,62 @@ export class ApiService {
       accountId,
       confirmed,
     });
+  }
+
+  /* ------------------------------------------------------------------ pending authorizations (CPVS / CPVD) */
+
+  pendingAuthAccounts(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.base}/pending-authorizations/accounts`);
+  }
+
+  pendingAuthSummary(accountId: string): Observable<PendingAuthSummaryView> {
+    return this.http.get<PendingAuthSummaryView>(
+      `${this.base}/pending-authorizations/by-account/${encodeURIComponent(accountId)}`,
+    );
+  }
+
+  pendingAuthorizations(query: {
+    accountId: string;
+    filter?: string;
+    fraudOnly?: boolean;
+    cursor?: string | null;
+    direction?: string;
+    page?: number;
+  }): Observable<PageResult<PendingAuthRow>> {
+    let params = new HttpParams().set('accountId', query.accountId);
+    if (query.filter) {
+      params = params.set('filter', query.filter);
+    }
+    if (query.fraudOnly) {
+      params = params.set('fraudOnly', true);
+    }
+    if (query.cursor) {
+      params = params.set('cursor', query.cursor);
+    }
+    if (query.direction) {
+      params = params.set('direction', query.direction);
+    }
+    params = params.set('page', query.page ?? 1);
+    return this.http.get<PageResult<PendingAuthRow>>(`${this.base}/pending-authorizations`, {
+      params,
+    });
+  }
+
+  pendingAuthorization(accountId: string, authKey: string): Observable<PendingAuthDetailView> {
+    return this.http.get<PendingAuthDetailView>(
+      `${this.base}/pending-authorizations/${encodeURIComponent(accountId)}/${encodeURIComponent(authKey)}`,
+    );
+  }
+
+  markAuthorizationFraud(
+    accountId: string,
+    authKey: string,
+    payload: FraudMarkRequest,
+  ): Observable<FraudMarkResult> {
+    return this.http.post<FraudMarkResult>(
+      `${this.base}/pending-authorizations/${encodeURIComponent(accountId)}/${encodeURIComponent(authKey)}/fraud`,
+      payload,
+    );
   }
 
   /* ------------------------------------------------------------------ user administration (CU00-CU03) */

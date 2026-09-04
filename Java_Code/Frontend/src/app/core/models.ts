@@ -251,6 +251,98 @@ export interface BillPaymentView {
   message: string | null;
 }
 
+/* ------------------------------------------------------------------ pending authorizations */
+
+/** Account block of the {@code COPAU00} map, the IMS {@code PAUTSUM0} root segment. */
+export interface PendingAuthSummaryView {
+  accountId: string;
+  customerId: string;
+  customerName: string;
+  /** The source labelled this field and never filled it; it comes from the account record here. */
+  accountActiveStatus: string;
+  authStatus: string;
+  accountStatus: string;
+  creditLimit: number;
+  cashLimit: number;
+  creditBalance: number;
+  cashBalance: number;
+  approvedAuthCount: number;
+  declinedAuthCount: number;
+  approvedAuthAmount: number;
+  declinedAuthAmount: number;
+  pendingCount: number;
+  fraudCount: number;
+}
+
+/** One row of the authorization list. Every coded field arrives with its resolved text. */
+export interface PendingAuthRow {
+  authKey: string;
+  authDate: string;
+  authTime: string;
+  cardNumber: string;
+  transactionAmt: number;
+  authRespCode: string;
+  authRespText: string;
+  matchStatus: string;
+  matchStatusText: string;
+  authFraud: string;
+  fraudStatusText: string;
+  merchantName: string;
+}
+
+/** Full authorization detail as the {@code COPAU01} map rendered it. */
+export interface PendingAuthDetailView {
+  accountId: string;
+  authKey: string;
+  cardNumber: string;
+  authDate: string;
+  authTime: string;
+  authOrigDate: string;
+  authOrigTime: string;
+  authType: string;
+  cardExpiryDate: string;
+  messageType: string;
+  messageSource: string;
+  authIdCode: string;
+  authRespCode: string;
+  authRespText: string;
+  authRespReason: string;
+  authRespReasonText: string;
+  processingCode: string;
+  transactionAmt: number;
+  approvedAmt: number;
+  mccCode: string;
+  acqrCountryCode: string;
+  posEntryMode: string;
+  posEntryModeText: string;
+  merchantId: string;
+  merchantName: string;
+  merchantCity: string;
+  merchantState: string;
+  merchantZip: string;
+  transactionId: string;
+  matchStatus: string;
+  matchStatusText: string;
+  authFraud: string;
+  fraudStatusText: string;
+  fraudRptDate: string;
+  /** Key of the next authorization under the same account, absent at the end of the chain. */
+  nextAuthKey?: string;
+  /** Key of the previous authorization under the same account, absent at the start. */
+  previousAuthKey?: string;
+}
+
+/** F5 on the detail screen: the intended state, not a blind toggle. */
+export interface FraudMarkRequest {
+  confirmed: boolean;
+  note?: string;
+}
+
+export interface FraudMarkResult {
+  message: string;
+  detail: PendingAuthDetailView;
+}
+
 /* ------------------------------------------------------------------ users */
 
 export interface UserRow {

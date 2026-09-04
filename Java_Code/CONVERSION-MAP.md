@@ -28,7 +28,9 @@ now lives. Paths are relative to `Java_Code/`.
 | `COUSR03C.cbl` | `CU03` | `COUSR03` | `service/UserAdminService#delete` | `features/admin/user-delete.ts` |
 | `COTRTLIC.cbl` | `CTLI` | `COTRTLI` | `service/ReferenceDataService#listTypes` | `features/admin/transaction-type-admin.ts` |
 | `COTRTUPC.cbl` | `CTTU` | `COTRTUP` | `service/ReferenceDataService#saveType` | `features/admin/transaction-type-admin.ts` |
-| `COPAUS0C.cbl` | — | `COPAU00` | not installed | `features/not-available/not-available.ts` |
+| `COPAUS0C.cbl` | `CPVS` | `COPAU00` | `service/PendingAuthService#summary` + `#list` | `features/pending-auth/pending-auth-list.ts` |
+| `COPAUS1C.cbl` | `CPVD` | `COPAU01` | `service/PendingAuthService#detail` | `features/pending-auth/pending-auth-detail.ts` |
+| `COPAUS2C.cbl` | — | — | `service/PendingAuthService#markFraud` | (the fraud action of the detail screen) |
 
 ## Batch programs
 
@@ -64,6 +66,9 @@ now lives. Paths are relative to `Java_Code/`.
 | `CVTRA02Y.cpy` | `DISCGRP` (50) | `domain/DisclosureGroup` | `disclosure_group` |
 | `CVTRA07Y.cpy` | report (133) | `batch/ReportFormatter` | — |
 | `COSTM01.CPY` | statement work file | `batch/StatementService` | `account_statement` |
+| `CIPAUSMY.cpy` | IMS `PAUTSUM0` (100) | `domain/PendingAuthSummary` | `pending_auth_summary` |
+| `CIPAUDTY.cpy` | IMS `PAUTDTL1` (200) | `domain/PendingAuthDetail` | `pending_auth_detail` |
+| `AUTHFRDS.dcl` | Db2 `CARDDEMO.AUTHFRDS` | `domain/AuthFraud` | `auth_fraud` |
 
 ### Logic and reference copybooks
 
@@ -95,6 +100,10 @@ The reusable field edits of `COACTUPC.cbl` (`1215-EDIT-MANDATORY` through `1265-
 | GDG reject data set `DALYREJS` | `batch_reject` table |
 | JES job return codes | `batch_run` table with the same completion codes |
 | `CEE3ABD` abend | Exception plus a failed `batch_run` row |
+| IMS HIDAM database `DBPAUTP0`, root plus child segment | `pending_auth_summary` and `pending_auth_detail` joined by a foreign key |
+| DL/I `GU` / `GNP` position and twin-chain scan | Ordered keyset reads on the nine's complement `auth_key` |
+| IMS and Db2 committed together by `EXEC CICS SYNCPOINT` | One local transaction over both tables |
+| IMS HD unload `AWS.M2.CARDDEMO.IMSDATA.DBPAUTP0.dat` | `migration/PendingAuthMigrationService` decoding it with `common/CobolBinary` |
 | RACF / `RESSEC` / `CMDSEC` | Spring Security URL rules plus `@PreAuthorize` per use case |
 
 ## REST surface
@@ -106,6 +115,7 @@ The reusable field edits of `COACTUPC.cbl` (`1215-EDIT-MANDATORY` through `1265-
 | Accounts | `/api/accounts` |
 | Cards | `/api/cards` |
 | Transactions and bill payment | `/api/transactions` |
+| Pending authorizations | `/api/pending-authorizations` |
 | Reference data | `/api/reference` |
 | Reports and statements | `/api/reports` |
 | Dashboard | `/api/dashboard` |

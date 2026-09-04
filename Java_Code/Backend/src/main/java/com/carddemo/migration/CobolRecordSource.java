@@ -15,11 +15,13 @@ import java.util.List;
 /**
  * Reads the COBOL data sets shipped under {@code Cobol_Code/.../app/data}.
  *
- * <p>Two physical forms are supported:</p>
+ * <p>Three physical forms are supported:</p>
  * <ul>
- *   <li>the ASCII line-oriented fixtures in {@code app/data/ASCII}, one record per line; and</li>
+ *   <li>the ASCII line-oriented fixtures in {@code app/data/ASCII}, one record per line;</li>
  *   <li>the EBCDIC fixed-length data sets in {@code app/data/EBCDIC}, decoded with code page
- *       {@code IBM037} and split on the declared record length.</li>
+ *       {@code IBM037} and split on the declared record length; and</li>
+ *   <li>data sets with no fixed record length, such as an IMS database unload, which are handed
+ *       to the caller as raw bytes.</li>
  * </ul>
  *
  * <p>DATA-005: the codec is always explicit. The process default encoding never decides a record
@@ -79,6 +81,19 @@ public class CobolRecordSource {
             }
         }
         return records;
+    }
+
+    /**
+     * Reads a data set whole, undecoded. Records that are neither line delimited nor of one fixed
+     * length, such as the variable length segment occurrences of an IMS unload, carry binary
+     * lengths and packed decimal fields that a character decode would destroy, so the caller works
+     * on the bytes themselves.
+     */
+    public byte[] readBytes(String relativePath) throws IOException {
+        Resource resource = resolve(relativePath);
+        try (InputStream in = resource.getInputStream()) {
+            return in.readAllBytes();
+        }
     }
 
     /** True when the file can be resolved from either the filesystem or the classpath. */

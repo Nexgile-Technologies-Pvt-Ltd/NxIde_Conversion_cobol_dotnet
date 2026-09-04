@@ -45,6 +45,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: 'Accounts', route: '/accounts/view', icon: 'account', tran: 'CAVW' },
       { label: 'Cards', route: '/cards', icon: 'card', tran: 'CCLI' },
       { label: 'Transactions', route: '/transactions', icon: 'transactions', tran: 'CT00' },
+      { label: 'Authorizations', route: '/pending-authorizations', icon: 'shield', tran: 'CPVS' },
       { label: 'Bill payment', route: '/bill-payment', icon: 'billPayment', tran: 'CB00' },
     ],
   },
